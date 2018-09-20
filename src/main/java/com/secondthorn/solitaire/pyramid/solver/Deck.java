@@ -184,7 +184,7 @@ public class Deck {
         return cardBucketMasks;
     }
 
-    private TLongObjectMap calcUnclearableMasks() {
+    private TLongObjectMap<long[]> calcUnclearableMasks() {
         TLongObjectMap<long[]> map = new TLongObjectHashMap<>();
         for (int i = 0; i < Pyramid.allPyramidFlags.length; i++) {
             long pyramidFlags = Pyramid.allPyramidFlags[i];
