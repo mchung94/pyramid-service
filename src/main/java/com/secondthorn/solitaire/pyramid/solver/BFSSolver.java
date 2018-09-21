@@ -6,6 +6,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * BFSSolver represents Breadth-First Search solvers.  Subclasses must
+ * implement the solve method but the methods defined here support finding
+ * the actions to get from the initial state to the current state, calculating
+ * the score if needed, and adding successor states to the search queue.
+ */
 public abstract class BFSSolver {
     /**
      * Solve Pyramid Solitaire with the given deck of cards, return a list of
