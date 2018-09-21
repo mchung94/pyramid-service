@@ -45,7 +45,7 @@ public class CardChallengeSolverTest {
         assertThat(solution.getActions().size(), is(equalTo(1)));
         assertThat(solution.getScore(), is(equalTo(5)));
         assertThat(solution.isBoardCleared(), is(equalTo(false)));
-        String expected = "Goal reached. Remove 1 card of rank A. Get 5 points in 1 step without clearing the board.";
+        String expected = "Remove 1 card of rank A. Get 5 points in 1 step without clearing the board.";
         assertThat(solution.getDescription(), is(equalTo(expected)));
     }
 

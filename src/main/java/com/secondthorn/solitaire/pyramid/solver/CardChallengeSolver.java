@@ -128,33 +128,31 @@ public class CardChallengeSolver extends BFSSolver {
     }
 
     private Solution goalReached(Deck deck, TLongLongMap seenStates, long state, int numRemoved) {
-        return createSolution(deck, seenStates, state, numRemoved, State.isPyramidClear(state), true);
+        return createSolution(deck, seenStates, state, numRemoved, State.isPyramidClear(state));
     }
 
     private Solution clearedState(Deck deck, TLongLongMap seenStates, long state, int numRemoved) {
-        return createSolution(deck, seenStates, state, numRemoved, true, false);
+        return createSolution(deck, seenStates, state, numRemoved, true);
     }
 
     private Solution nonClearedState(Deck deck, TLongLongMap seenStates, long state, int numRemoved) {
-        return createSolution(deck, seenStates, state, numRemoved, false, false);
+        return createSolution(deck, seenStates, state, numRemoved, false);
     }
 
 
     private Solution createSolution(Deck deck, TLongLongMap seenStates,
                                     long endState, int numCardsCleared,
-                                    boolean boardCleared, boolean goalReached) {
+                                    boolean boardCleared) {
         List<String> actions = actions(seenStates, endState, deck);
         int score = score(endState, deck);
-        String description = description(numCardsCleared, goalReached);
+        String description = description(numCardsCleared);
         return new Solution(description, score, boardCleared, actions);
     }
 
     // Make a human-readable solution description
-    private String description(int numCardsCleared, boolean goalReached) {
+    private String description(int numCardsCleared) {
         String cards = (numCardsCleared == 1) ? "card" : "cards";
-        String removalText = "Remove " + numCardsCleared + " " + cards +
-                " of rank " + cardRankToClear + ".";
-        return goalReached ? "Goal reached. " + removalText : removalText;
+        return "Remove " + numCardsCleared + " " + cards + " of rank " + cardRankToClear + ".";
     }
 
     private int numCardsOfRankRemoved(long state, int rankValue, Deck deck) {

@@ -19,8 +19,7 @@ public class ScoreChallengeSolver extends BFSSolver {
     private int goalPoints;
 
     public ScoreChallengeSolver() {
-        // without a goal score, make it unobtainable to find the max possible
-        goalPoints = MAX_POSSIBLE_SCORE + 1;
+        goalPoints = MAX_POSSIBLE_SCORE;
     }
 
     /**
@@ -46,7 +45,6 @@ public class ScoreChallengeSolver extends BFSSolver {
         TLongLongMap seenStates = new TLongLongHashMap();
         long bestState = -1;
         int bestScore = 0;
-        boolean goalReached = false;
         fringe.enqueue(State.INITIAL_STATE);
         while (!fringe.isEmpty()) {
             long state = fringe.dequeue();
@@ -54,13 +52,6 @@ public class ScoreChallengeSolver extends BFSSolver {
             int score = score(state, deck);
             if (score >= goalPoints) {
                 // stop searching, we reached the goal score
-                bestState = state;
-                bestScore = score;
-                goalReached = true;
-                break;
-            }
-            if  (score == MAX_POSSIBLE_SCORE) {
-                // stop searching, we can't do any better
                 bestState = state;
                 bestScore = score;
                 break;
@@ -81,11 +72,7 @@ public class ScoreChallengeSolver extends BFSSolver {
         if (bestState != -1) {
             List<String> actions = actions(seenStates, bestState, deck);
             boolean boardCleared = State.isPyramidClear(bestState);
-            if (goalReached) {
-                solutions.add(new Solution("Goal reached.", bestScore, boardCleared, actions));
-            } else {
-                solutions.add(new Solution("", bestScore, boardCleared, actions));
-            }
+            solutions.add(new Solution("", bestScore, boardCleared, actions));
         }
 
         return solutions;

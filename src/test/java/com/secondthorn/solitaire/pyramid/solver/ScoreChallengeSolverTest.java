@@ -27,7 +27,7 @@ public class ScoreChallengeSolverTest {
         assertThat(solution.getActions().size(), is(equalTo(15)));
         assertThat(solution.getScore(), is(equalTo(1225)));
         assertThat(solution.isBoardCleared(), is(equalTo(true)));
-        assertThat(solution.getDescription(), is(equalTo("Goal reached. Get 1225 points in 15 steps while clearing the board.")));
+        assertThat(solution.getDescription(), is(equalTo("Get 1225 points in 15 steps while clearing the board.")));
     }
 
     @Test
