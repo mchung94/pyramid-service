@@ -35,9 +35,7 @@ public class BoardChallengeSolver extends BFSSolver {
             if (State.isPyramidClear(state)) {
                 List<String> actions = actions(seenStates, state, deck);
                 int score = score(state, deck);
-                String description = "Get " + score + " points in " +
-                        actions.size() + " steps while clearing the board.";
-                solutions.add(new Solution(description, score, actions));
+                solutions.add(new Solution("", score, true, actions));
                 break;
             }
             long[] masks = deck.getSuccessorMasks(state);

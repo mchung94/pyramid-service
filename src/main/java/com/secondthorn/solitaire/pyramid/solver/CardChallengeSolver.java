@@ -145,30 +145,17 @@ public class CardChallengeSolver extends BFSSolver {
                                     boolean boardCleared, boolean goalReached) {
         List<String> actions = actions(seenStates, endState, deck);
         int score = score(endState, deck);
-        String description = removeMessage(numCardsCleared, actions.size(), score, boardCleared, goalReached);
-        return new Solution(description, score, actions);
+        String description = description(numCardsCleared, goalReached);
+        return new Solution(description, score, boardCleared, actions);
     }
 
     // Make a human-readable solution description
-    private String removeMessage(int numCardsCleared, int numSteps, int score,
-                                 boolean boardCleared, boolean goalReached) {
+    private String description(int numCardsCleared, boolean goalReached) {
         String cards = (numCardsCleared == 1) ? "card" : "cards";
-        String steps = (numSteps == 1) ? "step" : "steps";
-        String message = "Get " + score + " points in " + numSteps + " " +
-                steps + " while removing " + numCardsCleared + " " + cards +
-                " of rank " + cardRankToClear;
-        if (boardCleared && !goalReached) {
-            message += " and clearing the board.";
-        } else if (boardCleared) {
-            message += ", reaching the goal while clearing the board.";
-        } else if (!goalReached) {
-            message += " without clearing the board.";
-        } else {
-            message += ", reaching the goal without clearing the board.";
-        }
-        return message;
+        String removalText = "Remove " + numCardsCleared + " " + cards +
+                " of rank " + cardRankToClear + ".";
+        return goalReached ? "Goal reached. " + removalText : removalText;
     }
-
 
     private int numCardsOfRankRemoved(long state, int rankValue, Deck deck) {
         // using Kernighan's method in The C Programming Language 2nd Ed.

@@ -17,7 +17,11 @@ public class BoardChallengeSolverTest {
         BoardChallengeSolver solver = new BoardChallengeSolver();
         List<Solution> solutions = solver.solve(deck);
         assertThat(solutions.size(), is(equalTo(1)));
-        assertThat(solutions.get(0).getActions().size(), is(equalTo(44)));
+        Solution solution = solutions.get(0);
+        assertThat(solution.getActions().size(), is(equalTo(44)));
+        assertThat(solution.getScore(), is(equalTo(1275)));
+        assertThat(solution.isBoardCleared(), is(equalTo(true)));
+        assertThat(solution.getDescription(), is(equalTo("Get 1275 points in 44 steps while clearing the board.")));
     }
 
     @Test

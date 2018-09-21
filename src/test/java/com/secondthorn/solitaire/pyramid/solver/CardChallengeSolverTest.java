@@ -3,8 +3,10 @@ package com.secondthorn.solitaire.pyramid.solver;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
@@ -22,6 +24,13 @@ public class CardChallengeSolverTest {
         Deck deck = new Deck(cards);
         List<Solution> solutions = solver.solve(deck);
         assertThat(solutions.size(), is(equalTo(2)));
+        assertThat(
+                solutions.stream().map(Solution::getDescription).collect(Collectors.toList()),
+                containsInAnyOrder(
+                        "Remove 2 cards of rank 4. Get 1275 points in 54 steps while clearing the board.",
+                        "Remove 3 cards of rank 4. Get 190 points in 57 steps without clearing the board."
+                )
+        );
     }
 
     @Test
@@ -34,6 +43,10 @@ public class CardChallengeSolverTest {
         assertThat(solutions.size(), is(equalTo(1)));
         Solution solution = solutions.get(0);
         assertThat(solution.getActions().size(), is(equalTo(1)));
+        assertThat(solution.getScore(), is(equalTo(5)));
+        assertThat(solution.isBoardCleared(), is(equalTo(false)));
+        String expected = "Goal reached. Remove 1 card of rank A. Get 5 points in 1 step without clearing the board.";
+        assertThat(solution.getDescription(), is(equalTo(expected)));
     }
 
     @Test
@@ -46,5 +59,8 @@ public class CardChallengeSolverTest {
         assertThat(solutions.size(), is(equalTo(1)));
         Solution solution = solutions.get(0);
         assertThat(solution.getActions().size(), is(equalTo(46)));
+        assertThat(solution.getScore(), is(equalTo(55)));
+        assertThat(solution.isBoardCleared(), is(equalTo(false)));
+        assertThat(solution.getDescription(), is(equalTo("Remove 3 cards of rank J. Get 55 points in 46 steps without clearing the board.")));
     }
 }

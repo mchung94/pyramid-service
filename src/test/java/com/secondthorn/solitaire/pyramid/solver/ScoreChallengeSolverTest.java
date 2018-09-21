@@ -26,6 +26,8 @@ public class ScoreChallengeSolverTest {
         Solution solution = solutions.get(0);
         assertThat(solution.getActions().size(), is(equalTo(15)));
         assertThat(solution.getScore(), is(equalTo(1225)));
+        assertThat(solution.isBoardCleared(), is(equalTo(true)));
+        assertThat(solution.getDescription(), is(equalTo("Goal reached. Get 1225 points in 15 steps while clearing the board.")));
     }
 
     @Test
@@ -39,5 +41,23 @@ public class ScoreChallengeSolverTest {
         Solution solution = solutions.get(0);
         assertThat(solution.getActions().size(), is(equalTo(34)));
         assertThat(solution.getScore(), is(equalTo(60)));
+        assertThat(solution.isBoardCleared(), is(equalTo(false)));
+        assertThat(solution.getDescription(), is(equalTo("Get 60 points in 34 steps without clearing the board.")));
+    }
+
+    @Test
+    public void testForMaximumScoreWithoutReachingGoal() {
+        ScoreChallengeSolver solver = new ScoreChallengeSolver();
+        String cards = "Ac 2c 3c 4c 5c 6c 7c 8c 9c Tc Jc Qc Kc Ad 2d 3d 4d 5d 6d 7d 8d 9d Td Jd Qd Kd " +
+                "Ah 2h 3h 4h 5h 6h 7h 8h 9h Th Jh Qh Kh As 2s 3s 4s 5s 6s 7s 8s 9s Ts Js Qs Ks";
+        Deck deck = new Deck(cards);
+        List<Solution> solutions = solver.solve(deck);
+        assertThat(solutions.size(), is(equalTo(1)));
+        Solution solution = solutions.get(0);
+        assertThat(solution.getActions().size(), is(equalTo(29)));
+        assertThat(solution.getScore(), is(equalTo(1290)));
+        assertThat(solution.isBoardCleared(), is(equalTo(true)));
+        assertThat(solution.getDescription().contains("Goal reached."), is(equalTo(false)));
+        assertThat(solution.getDescription(), is(equalTo("Get 1290 points in 29 steps while clearing the board.")));
     }
 }

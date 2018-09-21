@@ -16,10 +16,11 @@ import java.util.List;
  */
 public class ScoreChallengeSolver extends BFSSolver {
     private static final int MAX_POSSIBLE_SCORE = 1290;
-    private int pointsNeeded;
+    private int goalPoints;
 
     public ScoreChallengeSolver() {
-        pointsNeeded = MAX_POSSIBLE_SCORE;
+        // without a goal score, make it unobtainable to find the max possible
+        goalPoints = MAX_POSSIBLE_SCORE + 1;
     }
 
     /**
@@ -31,7 +32,7 @@ public class ScoreChallengeSolver extends BFSSolver {
         if (currentScore >= goalScore) {
             throw new IllegalArgumentException("The current score must be smaller than the goal score");
         }
-        pointsNeeded = goalScore - currentScore;
+        goalPoints = goalScore - currentScore;
     }
 
     /**
@@ -45,22 +46,30 @@ public class ScoreChallengeSolver extends BFSSolver {
         TLongLongMap seenStates = new TLongLongHashMap();
         long bestState = -1;
         int bestScore = 0;
+        boolean goalReached = false;
         fringe.enqueue(State.INITIAL_STATE);
         while (!fringe.isEmpty()) {
             long state = fringe.dequeue();
             long[] successorMasks = deck.getSuccessorMasks(state);
             int score = score(state, deck);
-            if ((score >= pointsNeeded) || (score == MAX_POSSIBLE_SCORE)) {
+            if (score >= goalPoints) {
+                // stop searching, we reached the goal score
                 bestState = state;
                 bestScore = score;
-                // if we reach the goal just stop working on it
+                goalReached = true;
+                break;
+            }
+            if  (score == MAX_POSSIBLE_SCORE) {
+                // stop searching, we can't do any better
+                bestState = state;
+                bestScore = score;
                 break;
             }
             if (State.isPyramidClear(state) || (successorMasks.length == 0)) {
                 // if we clear the board we can't continue any further in
                 // the game, like removing stock + waste cards... but we should
                 // continue the search in case there's a better scoring path
-                if ((bestState == -1) || (score > bestScore)) {
+                if (score > bestScore) {
                     bestState = state;
                     bestScore = score;
                 }
@@ -71,13 +80,12 @@ public class ScoreChallengeSolver extends BFSSolver {
 
         if (bestState != -1) {
             List<String> actions = actions(seenStates, bestState, deck);
-            String description = "Get " + bestScore + " points in " + actions.size() + " steps ";
-            if (State.isPyramidClear(bestState)) {
-                description += "while clearing the board.";
+            boolean boardCleared = State.isPyramidClear(bestState);
+            if (goalReached) {
+                solutions.add(new Solution("Goal reached.", bestScore, boardCleared, actions));
             } else {
-                description += "without clearing the board.";
+                solutions.add(new Solution("", bestScore, boardCleared, actions));
             }
-            solutions.add(new Solution(description, bestScore, actions));
         }
 
         return solutions;
