@@ -105,18 +105,20 @@ public abstract class BFSSolver {
         if (recycleCountDiff != 0) {
             return "Recycle";
         } else if (existFlagsDiff != 0) {
-            List<String> cardsToRemove = new ArrayList<>();
+            List<Card> cardsToRemove = new ArrayList<>();
             long flag = 1L;
             for (int i = 0; i < 52; i++) {
                 if ((flag & existFlagsDiff) != 0) {
-                    cardsToRemove.add(deck.cardAt(i).toString());
+                    cardsToRemove.add(deck.cardAt(i));
                 }
                 flag <<= 1;
             }
             if (cardsToRemove.size() == 1) {
                 return "Remove " + cardsToRemove.get(0);
-            } else {
+            } else if (cardsToRemove.get(0).getRank().compareTo(cardsToRemove.get(1).getRank()) < 0) {
                 return "Remove " + cardsToRemove.get(0) + " and " + cardsToRemove.get(1);
+            } else {
+                return "Remove " + cardsToRemove.get(1) + " and " + cardsToRemove.get(0);
             }
         } else {
             return "Draw";
