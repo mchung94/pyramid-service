@@ -1,4 +1,4 @@
-package com.secondthorn.solitaire.pyramid.solver;
+package com.secondthorn.solitaire.pyramid.service.solver;
 
 import java.util.ArrayList;
 import java.util.HashMap;

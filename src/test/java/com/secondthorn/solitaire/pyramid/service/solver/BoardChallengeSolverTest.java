@@ -1,8 +1,10 @@
-package com.secondthorn.solitaire.pyramid.solver;
+package com.secondthorn.solitaire.pyramid.service.solver;
 
+import com.secondthorn.solitaire.pyramid.service.model.Solution;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -18,7 +20,7 @@ public class BoardChallengeSolverTest {
         List<Solution> solutions = solver.solve(deck);
         assertThat(solutions.size(), is(equalTo(1)));
         Solution solution = solutions.get(0);
-        assertThat(solution.getActions().size(), is(equalTo(44)));
+        assertThat(solution.getSteps().size(), is(equalTo(44)));
         assertThat(solution.getScore(), is(equalTo(1275)));
         assertThat(solution.isBoardCleared(), is(equalTo(true)));
         assertThat(solution.getDescription(), is(equalTo("Get 1275 points in 44 steps while clearing the board.")));

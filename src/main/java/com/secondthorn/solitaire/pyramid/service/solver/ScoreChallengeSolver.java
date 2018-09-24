@@ -1,5 +1,7 @@
-package com.secondthorn.solitaire.pyramid.solver;
+package com.secondthorn.solitaire.pyramid.service.solver;
 
+import com.secondthorn.solitaire.pyramid.service.model.Solution;
+import com.secondthorn.solitaire.pyramid.service.model.Step;
 import gnu.trove.map.TLongLongMap;
 import gnu.trove.map.hash.TLongLongHashMap;
 
@@ -70,9 +72,9 @@ public class ScoreChallengeSolver extends BFSSolver {
         }
 
         if (bestState != -1) {
-            List<String> actions = actions(seenStates, bestState, deck);
+            List<Step> steps = getSteps(seenStates, bestState, deck);
             boolean boardCleared = State.isPyramidClear(bestState);
-            solutions.add(new Solution("", bestScore, boardCleared, actions));
+            solutions.add(new Solution("", bestScore, boardCleared, steps));
         }
 
         return solutions;

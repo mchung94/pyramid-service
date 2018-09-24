@@ -1,4 +1,4 @@
-package com.secondthorn.solitaire.pyramid.solver;
+package com.secondthorn.solitaire.pyramid.service.solver;
 
 /**
  * States represent the "state of the world" for each step while playing

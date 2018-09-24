@@ -1,5 +1,6 @@
-package com.secondthorn.solitaire.pyramid.solver;
+package com.secondthorn.solitaire.pyramid.service.solver;
 
+import com.secondthorn.solitaire.pyramid.service.model.Solution;
 import org.junit.Test;
 
 import java.util.List;
@@ -42,7 +43,7 @@ public class CardChallengeSolverTest {
         List<Solution> solutions = solver.solve(deck);
         assertThat(solutions.size(), is(equalTo(1)));
         Solution solution = solutions.get(0);
-        assertThat(solution.getActions().size(), is(equalTo(1)));
+        assertThat(solution.getSteps().size(), is(equalTo(1)));
         assertThat(solution.getScore(), is(equalTo(5)));
         assertThat(solution.isBoardCleared(), is(equalTo(false)));
         String expected = "Remove 1 card of rank A. Get 5 points in 1 step without clearing the board.";
@@ -58,7 +59,7 @@ public class CardChallengeSolverTest {
         List<Solution> solutions = solver.solve(deck);
         assertThat(solutions.size(), is(equalTo(1)));
         Solution solution = solutions.get(0);
-        assertThat(solution.getActions().size(), is(equalTo(46)));
+        assertThat(solution.getSteps().size(), is(equalTo(46)));
         assertThat(solution.getScore(), is(equalTo(55)));
         assertThat(solution.isBoardCleared(), is(equalTo(false)));
         assertThat(solution.getDescription(), is(equalTo("Remove 3 cards of rank J. Get 55 points in 46 steps without clearing the board.")));

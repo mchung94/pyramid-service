@@ -1,5 +1,7 @@
-package com.secondthorn.solitaire.pyramid.solver;
+package com.secondthorn.solitaire.pyramid.service.solver;
 
+import com.secondthorn.solitaire.pyramid.service.model.Solution;
+import com.secondthorn.solitaire.pyramid.service.model.Step;
 import gnu.trove.map.TLongLongMap;
 
 import java.util.ArrayList;
@@ -20,9 +22,9 @@ public abstract class BFSSolver {
      */
     public abstract List<Solution> solve(Deck deck);
 
-    // Return a list of actions taken to get from the initial state to the
-    // current state.
-    protected List<String> actions(TLongLongMap seenStates, long state, Deck deck) {
+    // Return the actions taken to get from the initial state to the current
+    // state.
+    protected List<Step> getSteps(TLongLongMap seenStates, long state, Deck deck) {
         List<String> actions = new ArrayList<>();
         long nextState = state;
         while (seenStates.containsKey(nextState)) {
@@ -31,7 +33,11 @@ public abstract class BFSSolver {
             nextState = state;
         }
         Collections.reverse(actions);
-        return actions;
+        List<Step> steps = new ArrayList<>();
+        for (int stepNumber = 1; stepNumber <= actions.size(); stepNumber++) {
+            steps.add(new Step(stepNumber, actions.get(stepNumber - 1)));
+        }
+        return steps;
     }
 
     // Calculate the Pyramid Solitaire current score, given a state and the

@@ -1,5 +1,7 @@
-package com.secondthorn.solitaire.pyramid.solver;
+package com.secondthorn.solitaire.pyramid.service.solver;
 
+import com.secondthorn.solitaire.pyramid.service.model.Solution;
+import com.secondthorn.solitaire.pyramid.service.model.Step;
 import gnu.trove.map.TLongLongMap;
 import gnu.trove.map.hash.TLongLongHashMap;
 
@@ -33,9 +35,9 @@ public class BoardChallengeSolver extends BFSSolver {
         while (!fringe.isEmpty()) {
             state = fringe.dequeue();
             if (State.isPyramidClear(state)) {
-                List<String> actions = actions(seenStates, state, deck);
+                List<Step> steps = getSteps(seenStates, state, deck);
                 int score = score(state, deck);
-                solutions.add(new Solution("", score, true, actions));
+                solutions.add(new Solution("", score, true, steps));
                 break;
             }
             long[] masks = deck.getSuccessorMasks(state);

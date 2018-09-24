@@ -1,5 +1,7 @@
-package com.secondthorn.solitaire.pyramid.solver;
+package com.secondthorn.solitaire.pyramid.service.solver;
 
+import com.secondthorn.solitaire.pyramid.service.model.Solution;
+import com.secondthorn.solitaire.pyramid.service.model.Step;
 import gnu.trove.map.TLongLongMap;
 import gnu.trove.map.hash.TLongLongHashMap;
 
@@ -143,10 +145,10 @@ public class CardChallengeSolver extends BFSSolver {
     private Solution createSolution(Deck deck, TLongLongMap seenStates,
                                     long endState, int numCardsCleared,
                                     boolean boardCleared) {
-        List<String> actions = actions(seenStates, endState, deck);
+        List<Step> steps = getSteps(seenStates, endState, deck);
         int score = score(endState, deck);
         String description = description(numCardsCleared);
-        return new Solution(description, score, boardCleared, actions);
+        return new Solution(description, score, boardCleared, steps);
     }
 
     // Make a human-readable solution description

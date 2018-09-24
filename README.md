@@ -28,63 +28,199 @@ code is ready.
 - 64-bit JDK 8
 - Usually the program only needs a few hundred MB of memory but sometimes it
 requires a few GB on difficult puzzles.
+- It's set up to use PostgreSQL to store game challenges and their solutions,
+but it should not be difficult for a programmer to change this.
 
 ### Steps
 1. Run `gradlew bootJar`, the executable jar will be in build/libs/pyramid-service-0.1.0.jar
-2. Run `java -jar pyramid-service-0.1.0.jar`
-3. As an example, in your browser, go to
+2. Point it to your own version of [application.properties](src/main/resources/application.properties) 
+3. Run `java -jar pyramid-service-0.1.0.jar`
+4. As an example, in your browser, go to
 [http://localhost:8080/pyramid-solitaire/solver/Board?deck=ThJsJh9cQd5c2d9hTd4hQs9d3s8dKh6c3h6d8cKcAhQhTc9sKd8s4s2c4cJc7cJd8h6s5d3c4d3d6hTs5sKs7dAc7s2sQc2h5hAs7hAd](http://localhost:8080/pyramid-solitaire/solver/Board?deck=ThJsJh9cQd5c2d9hTd4hQs9d3s8dKh6c3h6d8cKcAhQhTc9sKd8s4s2c4cJc7cJd8h6s5d3c4d3d6hTs5sKs7dAc7s2sQc2h5hAs7hAd)
-4. The result is JSON:
+5. The result is JSON:
 ```json
 [
    {
       "description":"Get 1275 points in 44 steps while clearing the board.",
       "score":1275,
-      "actions":[
-         "Remove 9s and 4s",
-         "Remove Kd",
-         "Draw",
-         "Remove 2c and Jc",
-         "Remove Ah and Qh",
-         "Remove 6d and 7c",
-         "Draw",
-         "Draw",
-         "Draw",
-         "Remove 8s and 5d",
-         "Remove Kc",
-         "Remove Kh",
-         "Draw",
-         "Draw",
-         "Remove Tc and 3d",
-         "Draw",
-         "Draw",
-         "Remove 8c and 5s",
-         "Remove Ks",
-         "Remove 3s and Ts",
-         "Remove 6h and 7d",
-         "Draw",
-         "Remove 6c and 7s",
-         "Draw",
-         "Draw",
-         "Draw",
-         "Remove 8d and 5h",
-         "Remove Td and 3h",
-         "Remove 4h and 9d",
-         "Remove Qs and As",
-         "Draw",
-         "Draw",
-         "Recycle",
-         "Remove 9h and 4c",
-         "Draw",
-         "Remove 5c and 8h",
-         "Draw",
-         "Draw",
-         "Draw",
-         "Remove Qd and Ac",
-         "Remove Jh and 2d",
-         "Remove 9c and 4d",
-         "Remove Js and 2s",
-         "Remove Th and 3c"
+      "boardCleared":true,
+      "steps":[
+         {
+            "stepNumber":1,
+            "action":"Remove 4s and 9s"
+         },
+         {
+            "stepNumber":2,
+            "action":"Remove Kd"
+         },
+         {
+            "stepNumber":3,
+            "action":"Draw"
+         },
+         {
+            "stepNumber":4,
+            "action":"Remove 2c and Jc"
+         },
+         {
+            "stepNumber":5,
+            "action":"Remove Ah and Qh"
+         },
+         {
+            "stepNumber":6,
+            "action":"Remove 6d and 7c"
+         },
+         {
+            "stepNumber":7,
+            "action":"Draw"
+         },
+         {
+            "stepNumber":8,
+            "action":"Draw"
+         },
+         {
+            "stepNumber":9,
+            "action":"Draw"
+         },
+         {
+            "stepNumber":10,
+            "action":"Remove 5d and 8s"
+         },
+         {
+            "stepNumber":11,
+            "action":"Remove Kc"
+         },
+         {
+            "stepNumber":12,
+            "action":"Remove Kh"
+         },
+         {
+            "stepNumber":13,
+            "action":"Draw"
+         },
+         {
+            "stepNumber":14,
+            "action":"Draw"
+         },
+         {
+            "stepNumber":15,
+            "action":"Remove 3d and Tc"
+         },
+         {
+            "stepNumber":16,
+            "action":"Draw"
+         },
+         {
+            "stepNumber":17,
+            "action":"Draw"
+         },
+         {
+            "stepNumber":18,
+            "action":"Remove 5s and 8c"
+         },
+         {
+            "stepNumber":19,
+            "action":"Remove Ks"
+         },
+         {
+            "stepNumber":20,
+            "action":"Remove 3s and Ts"
+         },
+         {
+            "stepNumber":21,
+            "action":"Remove 6h and 7d"
+         },
+         {
+            "stepNumber":22,
+            "action":"Draw"
+         },
+         {
+            "stepNumber":23,
+            "action":"Remove 6c and 7s"
+         },
+         {
+            "stepNumber":24,
+            "action":"Draw"
+         },
+         {
+            "stepNumber":25,
+            "action":"Draw"
+         },
+         {
+            "stepNumber":26,
+            "action":"Draw"
+         },
+         {
+            "stepNumber":27,
+            "action":"Remove 5h and 8d"
+         },
+         {
+            "stepNumber":28,
+            "action":"Remove 3h and Td"
+         },
+         {
+            "stepNumber":29,
+            "action":"Remove 4h and 9d"
+         },
+         {
+            "stepNumber":30,
+            "action":"Remove As and Qs"
+         },
+         {
+            "stepNumber":31,
+            "action":"Draw"
+         },
+         {
+            "stepNumber":32,
+            "action":"Draw"
+         },
+         {
+            "stepNumber":33,
+            "action":"Recycle"
+         },
+         {
+            "stepNumber":34,
+            "action":"Remove 4c and 9h"
+         },
+         {
+            "stepNumber":35,
+            "action":"Draw"
+         },
+         {
+            "stepNumber":36,
+            "action":"Remove 5c and 8h"
+         },
+         {
+            "stepNumber":37,
+            "action":"Draw"
+         },
+         {
+            "stepNumber":38,
+            "action":"Draw"
+         },
+         {
+            "stepNumber":39,
+            "action":"Draw"
+         },
+         {
+            "stepNumber":40,
+            "action":"Remove Ac and Qd"
+         },
+         {
+            "stepNumber":41,
+            "action":"Remove 2d and Jh"
+         },
+         {
+            "stepNumber":42,
+            "action":"Remove 4d and 9c"
+         },
+         {
+            "stepNumber":43,
+            "action":"Remove 2s and Js"
+         },
+         {
+            "stepNumber":44,
+            "action":"Remove 3c and Th"
+         }
       ]
    }
 ]
@@ -108,25 +244,26 @@ would look like this:
 top of stock pile -> 3h 4h 5h 6h 7h 8h 9h Th Jh Qh Kh As 2s 3s 4s 5s 6s 7s 8s 9s Ts Js Qs Ks
 ```
 
-### Services
+### Endpoints
 Given a card deck string like the above, the service supports all of Microsoft
-Solitaire Collection's challenges with these URLs:
-- /pyramid-solitaire/solver/Board?deck=...
+Solitaire Collection's challenges with these endpoints:
+- /pyramid-solitaire/solver/board?deck=...
   - The Board Challenge solver is for finding the minimum number of steps to
   clear the 28 pyramid cards, even if there are still cards in the stock or
   waste piles.
-- /pyramid-solitaire/solver/Score?deck=...
-  - The Score Challenge solver finds the way to get the maximum score.
-- /pyramid-solitaire/solver/Score?goal=2500&current=1800&deck=...
+- /pyramid-solitaire/solver/score?goalScore=2500&currentScore=1800&deck=...
   - The Score Challenge solver, given the goal score and the current score,
-  will find the fastest way to reach the goal score.
-- /pyramid-solitaire/solver/Card?goal=4&rank=J&current=1&deck=...
+  will find the fastest way to reach the goal score.  The maximum possible
+  score is 1290 so if you want to just maximize the score without a goal in
+  mind, use that.
+- /pyramid-solitaire/solver/card?goalNumberToRemove=4&rankToRemove=J&currentNumberRemoved=1&deck=...
   - The Card Challenge solver, given a card rank, a goal number of cards to
   remove (of that rank), and the current number of cards removed so far, will
-  find the best way to remove that many cards.  For example, with goal=4,
-  rank=J, and current=1, it means your goal is to remove 4 Jacks, and you've
-  removed one Jack so far.  This is the solver that can potentially return
-  multiple results - in the examples of the 4 Jacks, if it found a way to
-  remove 1 Jack while clearing the board, or remove 2 Jacks without clearing
-  the board, it doesn't know which is better (not clearing the board means
-  having to use limited re-deals) so it returns both solutions.
+  find the best way to remove that many cards.  For example, with
+  goalNumberToRemove=4, rankToRemove=J, and currentNumberRemoved=1, it means
+  your goal is to remove 4 Jacks, and you've removed one Jack so far.  This is
+  the solver that can potentially return multiple results - in the examples of
+  the 4 Jacks, if it found a way to remove 1 Jack while clearing the board, or
+  remove 2 Jacks without clearing the board, it doesn't know which is better
+  (not clearing the board means having to use limited re-deals) so it returns
+  both solutions.

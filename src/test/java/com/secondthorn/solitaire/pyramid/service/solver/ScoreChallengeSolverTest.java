@@ -1,5 +1,6 @@
-package com.secondthorn.solitaire.pyramid.solver;
+package com.secondthorn.solitaire.pyramid.service.solver;
 
+import com.secondthorn.solitaire.pyramid.service.model.Solution;
 import org.junit.Test;
 
 import java.util.List;
@@ -24,7 +25,7 @@ public class ScoreChallengeSolverTest {
         List<Solution> solutions = solver.solve(deck);
         assertThat(solutions.size(), is(equalTo(1)));
         Solution solution = solutions.get(0);
-        assertThat(solution.getActions().size(), is(equalTo(15)));
+        assertThat(solution.getSteps().size(), is(equalTo(15)));
         assertThat(solution.getScore(), is(equalTo(1225)));
         assertThat(solution.isBoardCleared(), is(equalTo(true)));
         assertThat(solution.getDescription(), is(equalTo("Get 1225 points in 15 steps while clearing the board.")));
@@ -39,7 +40,7 @@ public class ScoreChallengeSolverTest {
         List<Solution> solutions = solver.solve(deck);
         assertThat(solutions.size(), is(equalTo(1)));
         Solution solution = solutions.get(0);
-        assertThat(solution.getActions().size(), is(equalTo(34)));
+        assertThat(solution.getSteps().size(), is(equalTo(34)));
         assertThat(solution.getScore(), is(equalTo(60)));
         assertThat(solution.isBoardCleared(), is(equalTo(false)));
         assertThat(solution.getDescription(), is(equalTo("Get 60 points in 34 steps without clearing the board.")));
@@ -54,7 +55,7 @@ public class ScoreChallengeSolverTest {
         List<Solution> solutions = solver.solve(deck);
         assertThat(solutions.size(), is(equalTo(1)));
         Solution solution = solutions.get(0);
-        assertThat(solution.getActions().size(), is(equalTo(29)));
+        assertThat(solution.getSteps().size(), is(equalTo(29)));
         assertThat(solution.getScore(), is(equalTo(1290)));
         assertThat(solution.isBoardCleared(), is(equalTo(true)));
         assertThat(solution.getDescription().contains("Goal reached."), is(equalTo(false)));

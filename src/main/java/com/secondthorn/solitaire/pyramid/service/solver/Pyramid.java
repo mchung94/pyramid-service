@@ -1,4 +1,4 @@
-package com.secondthorn.solitaire.pyramid.solver;
+package com.secondthorn.solitaire.pyramid.service.solver;
 
 import gnu.trove.list.TLongList;
 import gnu.trove.list.array.TLongArrayList;
