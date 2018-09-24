@@ -33,6 +33,13 @@ public class BoardChallengeSolverTest {
         Deck deck = new Deck(cards);
         BoardChallengeSolver solver = new BoardChallengeSolver();
         List<Solution> solutions = solver.solve(deck);
-        assertThat(solutions.size(), is(equalTo(0)));
+        assertThat(solutions.size(), is(equalTo(1)));
+        Solution solution = solutions.get(0);
+        assertThat(solution.getSteps().size(), is(equalTo(1)));
+        assertThat(solution.getSteps().get(0).getStepNumber(), is(equalTo(1)));
+        assertThat(solution.getSteps().get(0).getAction(), is(equalTo("Lose Quickly")));
+        assertThat(solution.getScore(), is(equalTo(0)));
+        assertThat(solution.isBoardCleared(), is(equalTo(false)));
+        assertThat(solution.getDescription(), is(equalTo("There is no way to clear the board. Get 0 points in 1 step without clearing the board.")));
     }
 }

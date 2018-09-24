@@ -38,11 +38,15 @@ public class BoardChallengeSolver extends BFSSolver {
                 List<Step> steps = getSteps(seenStates, state, deck);
                 int score = score(state, deck);
                 solutions.add(new Solution("", score, true, steps));
-                break;
+                return solutions;
             }
             long[] masks = deck.getSuccessorMasks(state);
             addSuccessorStates(fringe, seenStates, state, masks);
         }
+        // if there's no way to clear the board, make a "lose quickly" solution
+        List<Step> steps = new ArrayList<>();
+        steps.add(new Step(1, "Lose Quickly"));
+        solutions.add(new Solution("There is no way to clear the board.", 0, false, steps));
         return solutions;
     }
 
