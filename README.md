@@ -1,27 +1,35 @@
 # pyramid-service
 This is a work in progress on a Pyramid Solitaire solving web service.
+You can try it out online at https://secondthorn.com/pyramid-solitaire/solver
+with the appropriate parameters, for example
+[Score Challenge to get 291 points](https://secondthorn.com/pyramid-solitaire/solver/score?goalScore=1290&currentScore=999&deck=Ac2c3c4c5c6c7c8c9cTcJcQcKcAd2d3d4d5d6d7d8d9dTdJdQdKdAh2h3h4h5h6h7h8h9hThJhQhKhAs2s3s4s5s6s7s8s9sTsJsQsKs).
+
+Currently, complicated puzzles will run out of heap space on my server, so I'm
+working on a solution to that.  On my site, this service is set up using
+nginx, PostgreSQL, and Spring Boot, and I'm in the process of adding message
+queues for distributed worker processes to solve the more complicated puzzles.
 
 ## Introduction
 I've been curious about how to write code to find optimal solutions to
-[Pyramid Solitaire](https://en.wikipedia.org/wiki/Pyramid_(card_game)), which
-is a pretty common solitaire game.
+[Pyramid Solitaire](https://en.wikipedia.org/wiki/Pyramid_(card_game)) which is
+one of my favorite solitaire card games.  The hard part about writing a
+program to solve these games is to optimize it.  My initial straightforward
+implementations of Breadth-First Search or A\* took an hour and 28GB of memory
+to solve the hardest game I found so far (actually an unsolvable game where
+the program has to determine that there is no solution).  I've improved the
+performance about 50x and reduced memory usage to the point where it can
+process the same game in 45 seconds on an 8GB laptop.
 
-So far I've created
+Earlier, I created
 [Solitaire Player](https://github.com/mchung94/solitaire-player),
 which is a program that you can
-[download](https://github.com/mchung94/solitaire-player/releases/download/v1.2.0/solitaire-player-v1.2.0.zip)
-and it can play Pyramid games on Microsoft Solitaire Collection for you (as
+[download](https://github.com/mchung94/solitaire-player/releases/download/v1.2.0/solitaire-player-v1.2.0.zip).
+It can play Pyramid games on Microsoft Solitaire Collection for you, as
 long as you have a 64-bit JRE 8 and Microsoft Solitaire Collection for Windows
-10).
+10.
 
 But if you don't want to download anything, I thought the next step should be
 to make it available online as a web service.
-
-Currently this is using a brand new solver designed to use less memory, and has
-the basic web functionality working.  It's not yet deployed online anywhere,
-but you can run it yourself if you have JDK 8.  There's a lot of work to be
-done on the actual web part of the code, but the Pyramid Solitaire solving
-code is ready.
 
 ## Usage
 ### Requirements
@@ -29,14 +37,14 @@ code is ready.
 - Usually the program only needs a few hundred MB of memory but sometimes it
 requires a few GB on difficult puzzles.
 - It's set up to use PostgreSQL to store game challenges and their solutions,
-but it should not be difficult for a programmer to change this.
+so you may need to change this.
 
 ### Steps
 1. Run `gradlew bootJar`, the executable jar will be in build/libs/pyramid-service-0.1.0.jar
 2. Point it to your own version of [application.properties](src/main/resources/application.properties) 
 3. Run `java -jar pyramid-service-0.1.0.jar`
 4. As an example, in your browser, go to
-[http://localhost:8080/pyramid-solitaire/solver/Board?deck=ThJsJh9cQd5c2d9hTd4hQs9d3s8dKh6c3h6d8cKcAhQhTc9sKd8s4s2c4cJc7cJd8h6s5d3c4d3d6hTs5sKs7dAc7s2sQc2h5hAs7hAd](http://localhost:8080/pyramid-solitaire/solver/Board?deck=ThJsJh9cQd5c2d9hTd4hQs9d3s8dKh6c3h6d8cKcAhQhTc9sKd8s4s2c4cJc7cJd8h6s5d3c4d3d6hTs5sKs7dAc7s2sQc2h5hAs7hAd)
+[http://localhost:8080/pyramid-solitaire/solver/board?deck=ThJsJh9cQd5c2d9hTd4hQs9d3s8dKh6c3h6d8cKcAhQhTc9sKd8s4s2c4cJc7cJd8h6s5d3c4d3d6hTs5sKs7dAc7s2sQc2h5hAs7hAd](http://localhost:8080/pyramid-solitaire/solver/Board?deck=ThJsJh9cQd5c2d9hTd4hQs9d3s8dKh6c3h6d8cKcAhQhTc9sKd8s4s2c4cJc7cJd8h6s5d3c4d3d6hTs5sKs7dAc7s2sQc2h5hAs7hAd)
 5. The result is JSON:
 ```json
 [
@@ -244,26 +252,40 @@ would look like this:
 top of stock pile -> 3h 4h 5h 6h 7h 8h 9h Th Jh Qh Kh As 2s 3s 4s 5s 6s 7s 8s 9s Ts Js Qs Ks
 ```
 
+If you are curious if your deck is formatted correctly, just run it through
+the service and it will tell you if there are missing or duplicated cards.
+
 ### Endpoints
 Given a card deck string like the above, the service supports all of Microsoft
 Solitaire Collection's challenges with these endpoints:
-- /pyramid-solitaire/solver/board?deck=...
-  - The Board Challenge solver is for finding the minimum number of steps to
-  clear the 28 pyramid cards, even if there are still cards in the stock or
-  waste piles.
-- /pyramid-solitaire/solver/score?goalScore=2500&currentScore=1800&deck=...
-  - The Score Challenge solver, given the goal score and the current score,
-  will find the fastest way to reach the goal score.  The maximum possible
-  score is 1290 so if you want to just maximize the score without a goal in
-  mind, use that.
-- /pyramid-solitaire/solver/card?goalNumberToRemove=4&rankToRemove=J&currentNumberRemoved=1&deck=...
-  - The Card Challenge solver, given a card rank, a goal number of cards to
-  remove (of that rank), and the current number of cards removed so far, will
-  find the best way to remove that many cards.  For example, with
-  goalNumberToRemove=4, rankToRemove=J, and currentNumberRemoved=1, it means
-  your goal is to remove 4 Jacks, and you've removed one Jack so far.  This is
-  the solver that can potentially return multiple results - in the examples of
-  the 4 Jacks, if it found a way to remove 1 Jack while clearing the board, or
-  remove 2 Jacks without clearing the board, it doesn't know which is better
-  (not clearing the board means having to use limited re-deals) so it returns
-  both solutions.
+- Board Challenges (clearing the 28 pyramid cards)
+  - /pyramid-solitaire/solver/board?deck=...
+  - It only needs a single query parameter, the deck.
+  - This will find the minimum number of steps to clear the 28 pyramid cards,
+    even if there are still cards in the stock or waste piles.  If there is no
+    solution, it will return a "solution" that just tells you to lose quickly.
+- Score Challenges (maximizing the score)
+  - /pyramid-solitaire/solver/score?goalScore=2500&currentScore=1800&deck=...
+  - It needs three query parameters:
+    - goalScore
+    - currentScore
+    - deck
+  - This will find the fastest way to reach the goal score.  If that's not
+    possible, it will try to maximize the score overall.  The maximum possible
+    score is 1290, so if you want to just maximize the score without a goal in
+    mind, use goalScore=1290&currentScore=0.
+- Card Challenges (removing cards of a given rank)
+  - /pyramid-solitaire/solver/card?goalNumberToRemove=4&rankToRemove=J&currentNumberRemoved=1&deck=...
+  - It needs three query parameters:
+    - rankToRemove (one of A 2 3 4 5 6 7 8 9 T J Q K)
+    - goalNumberToRemove
+    - currentNumberRemoved
+  - This will find the best way to remove the cards to reach the goal.
+    For example, with goalNumberToRemove=4, rankToRemove=J, and
+    currentNumberRemoved=1, it means your goal is to remove 4 Jacks, and you've
+    removed one Jack so far.  This is the solver that can potentially return
+    multiple results - in this example, if it found a way to remove 1 Jack
+    while clearing the board, or remove 2 Jacks without clearing the board, it
+    doesn't know which is better (not clearing the board means having to use
+    limited re-deals) so it returns both solutions.
+
