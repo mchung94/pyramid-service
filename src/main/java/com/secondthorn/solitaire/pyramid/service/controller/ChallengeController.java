@@ -90,9 +90,9 @@ public class ChallengeController {
 
     @GetMapping("/pyramid-solitaire/solver/card")
     public List<Solution> getCardChallenge(@RequestParam(value = "deck") String deckString,
-                               @RequestParam(value = "rankToRemove") char goalRank,
-                               @RequestParam(value = "goalNumberToRemove") int goalNum,
-                               @RequestParam(value = "currentNumberRemoved") int currentNum) {
+                                           @RequestParam(value = "rankToRemove") char goalRank,
+                                           @RequestParam(value = "goalNumberToRemove") int goalNum,
+                                           @RequestParam(value = "currentNumberRemoved") int currentNum) {
         validateCardChallengeParams(deckString, goalRank, goalNum, currentNum);
         int goal = goalNum - currentNum;
         CardChallenge challenge = challengeRepository.findByDeckStringAndGoalRankAndGoalNum(deckString, goalRank, goal);

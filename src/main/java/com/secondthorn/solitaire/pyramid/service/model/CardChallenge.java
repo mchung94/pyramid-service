@@ -33,13 +33,10 @@ public class CardChallenge extends Challenge {
     }
 
     public CardChallenge(String deckString, Character goalRank, Integer goalNum, List<Solution> solutions) {
+        super(solutions);
         this.deckString = deckString;
         this.goalRank = goalRank;
         this.goalNum = goalNum;
-        this.solutions = solutions;
-        for (Solution solution : solutions) {
-            solution.setChallenge(this);
-        }
     }
 
     public Character getGoalRank() {

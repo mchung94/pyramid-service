@@ -55,6 +55,13 @@ public class Solution {
         this.score = score;
         this.boardCleared = boardCleared;
         this.steps = steps;
+        connect();
+    }
+
+    /**
+     * Link the @OneToMany relationships so they save properly.
+     */
+    public void connect() {
         for (Step step : steps) {
             step.setSolution(this);
         }

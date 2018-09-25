@@ -1,5 +1,7 @@
 package com.secondthorn.solitaire.pyramid.service.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -31,6 +33,7 @@ public abstract class Challenge {
      */
     public abstract String getDeckString();
 
+    @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "challenge_id", nullable = false, updatable = false)
@@ -39,6 +42,24 @@ public abstract class Challenge {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "challenge")
     @OrderBy("solution_id")
     protected List<Solution> solutions;
+
+    protected Challenge() {
+    }
+
+    public Challenge(List<Solution> solutions) {
+        this.solutions = solutions;
+        connect();
+    }
+
+    /**
+     * Link the @OneToMany relationships so they save properly.
+     */
+    public void connect() {
+        for (Solution solution : solutions) {
+            solution.setChallenge(this);
+            solution.connect();
+        }
+    }
 
     public Long getId() {
         return id;

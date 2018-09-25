@@ -20,11 +20,8 @@ public class BoardChallenge extends Challenge {
     }
 
     public BoardChallenge(String deckString, List<Solution> solutions) {
+        super(solutions);
         this.deckString = deckString;
-        this.solutions = solutions;
-        for (Solution solution : solutions) {
-            solution.setChallenge(this);
-        }
     }
 
     @Override

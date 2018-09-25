@@ -26,12 +26,9 @@ public class ScoreChallenge extends Challenge {
     }
 
     public ScoreChallenge(String deckString, Integer goalScore, List<Solution> solutions) {
+        super(solutions);
         this.deckString = deckString;
         this.goalScore = goalScore;
-        this.solutions = solutions;
-        for (Solution solution : solutions) {
-            solution.setChallenge(this);
-        }
     }
 
     public Integer getGoalScore() {
