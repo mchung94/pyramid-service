@@ -1,5 +1,6 @@
 package com.secondthorn.solitaire.pyramid.service.solver;
 
+import com.secondthorn.solitaire.pyramid.service.exception.InvalidParameterException;
 import gnu.trove.list.TLongList;
 import gnu.trove.list.array.TLongArrayList;
 import gnu.trove.map.TLongObjectMap;
@@ -38,6 +39,16 @@ public class Deck {
      * 52 card deck (if there's any missing or duplicate cards).
      */
     public Deck(String deckString) {
+        validateDeckString(deckString);
+        List<Card> cardList = readCards(deckString);
+        this.cards = cardList.toArray(new Card[52]);
+        this.values = calcCardValues();
+        this.cardRankMasks = calcCardRankMasks(values);
+        this.unclearableMasks = calcUnclearableMasks();
+        this.successorMasks = calcSuccessorMasks();
+    }
+
+    public static void validateDeckString(String deckString) {
         List<Card> cardList = readCards(deckString);
         Map<Card, Integer> counts = countCards(cardList);
         Map<Card, Integer> duplicates = duplicateCardCounts(counts);
@@ -48,13 +59,8 @@ public class Deck {
                     "The deck isn't a standard 52 card deck: " +
                             "Number of cards: %d, Duplicates: %s, Missing: %s",
                     cardList.size(), duplicates, missing);
-            throw new IllegalArgumentException(message);
+            throw new InvalidParameterException(message);
         }
-        this.cards = cardList.toArray(new Card[52]);
-        this.values = calcCardValues();
-        this.cardRankMasks = calcCardRankMasks(values);
-        this.unclearableMasks = calcUnclearableMasks();
-        this.successorMasks = calcSuccessorMasks();
     }
 
     /**
@@ -130,7 +136,7 @@ public class Deck {
     // cards in it.  This is slow but doesn't cause problems with assuming
     // whitespace or separators, or accidentally creating cards that weren't
     // there before when stripping whitespace and merging letters together.
-    private List<Card> readCards(String deckString) {
+    private static List<Card> readCards(String deckString) {
         List<Card> cardList = new ArrayList<>();
         for (int i = 0; i < deckString.length() - 1; i++) {
             try {
@@ -142,7 +148,7 @@ public class Deck {
         return cardList;
     }
 
-    private Map<Card, Integer> countCards(List<Card> cards) {
+    private static Map<Card, Integer> countCards(List<Card> cards) {
         Map<Card, Integer> counts = new HashMap<>();
         for (Card card : Card.ALL_CARDS) {
             counts.put(card, 0);
@@ -153,13 +159,13 @@ public class Deck {
         return counts;
     }
 
-    private Map<Card, Integer> duplicateCardCounts(Map<Card, Integer> counts) {
+    private static Map<Card, Integer> duplicateCardCounts(Map<Card, Integer> counts) {
         return counts.entrySet().stream()
                 .filter(e -> e.getValue() > 1)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
-    private List<Card> missingCards(Map<Card, Integer> counts) {
+    private static List<Card> missingCards(Map<Card, Integer> counts) {
         return counts.entrySet().stream()
                 .filter(e -> e.getValue() == 0)
                 .map(Map.Entry::getKey)

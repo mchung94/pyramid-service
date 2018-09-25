@@ -1,5 +1,6 @@
 package com.secondthorn.solitaire.pyramid.service.controller;
 
+import com.secondthorn.solitaire.pyramid.service.exception.InvalidParameterException;
 import com.secondthorn.solitaire.pyramid.service.model.BoardChallenge;
 import com.secondthorn.solitaire.pyramid.service.model.CardChallenge;
 import com.secondthorn.solitaire.pyramid.service.model.ScoreChallenge;
@@ -32,6 +33,7 @@ public class ChallengeController {
 
     @GetMapping("/pyramid-solitaire/solver/board")
     public List<Solution> board(@RequestParam(value = "deck") String deckString) {
+        Deck.validateDeckString(deckString);
         BoardChallenge boardChallenge = challengeRepository.findByDeckString(deckString);
         if (boardChallenge == null) {
             BoardChallengeSolver solver = new BoardChallengeSolver();
@@ -47,7 +49,19 @@ public class ChallengeController {
     public List<Solution> score(@RequestParam(value = "deck") String deckString,
                                 @RequestParam(value = "goalScore", required = false) Integer goalScore,
                                 @RequestParam(value = "currentScore", required = false) Integer currentScore) {
+        Deck.validateDeckString(deckString);
+        if (currentScore == null) {
+            currentScore = 0;
+        }
+        if (goalScore == null) {
+            goalScore = 1290;
+        }
         int goal = goalScore - currentScore;
+        if (goal <= 0) {
+            throw new InvalidParameterException(String.format(
+                    "goalScore (%d) must be greater than currentScore (%d)",
+                    goalScore, currentScore));
+        }
         ScoreChallenge scoreChallenge = challengeRepository.findByDeckStringAndGoalScore(deckString, goal);
         if (scoreChallenge == null) {
             ScoreChallengeSolver solver = new ScoreChallengeSolver(goalScore, currentScore);
@@ -64,7 +78,18 @@ public class ChallengeController {
                                @RequestParam(value = "rankToRemove") Character goalRank,
                                @RequestParam(value = "goalNumberToRemove") int goalNum,
                                @RequestParam(value = "currentNumberRemoved") int currentNum) {
+        Deck.validateDeckString(deckString);
+        if ("A23456789TJQK".indexOf(goalRank) == -1) {
+            throw new InvalidParameterException("rankToRemove (" + goalRank +
+                    ") is an invalid card rank. " +
+                    "It must be one of A 2 3 4 5 6 7 8 9 T J Q K.");
+        }
         int goal = goalNum - currentNum;
+        if (goal <= 0) {
+            throw new InvalidParameterException(String.format(
+                    "goalNumberToRemove (%d) must be greater than currentNumberRemoved (%d)",
+                    goalNum, currentNum));
+        }
         CardChallenge cardChallenge = challengeRepository.findByDeckStringAndGoalRankAndGoalNum(deckString, goalRank, goal);
         if (cardChallenge == null) {
             CardChallengeSolver solver = new CardChallengeSolver(goalNum, goalRank, currentNum);

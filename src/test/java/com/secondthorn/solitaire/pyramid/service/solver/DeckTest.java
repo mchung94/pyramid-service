@@ -1,5 +1,6 @@
 package com.secondthorn.solitaire.pyramid.service.solver;
 
+import com.secondthorn.solitaire.pyramid.service.exception.InvalidParameterException;
 import gnu.trove.list.TIntList;
 import gnu.trove.list.TLongList;
 import gnu.trove.list.array.TIntArrayList;
@@ -26,8 +27,8 @@ public class DeckTest {
     );
     private static final Deck sortedDeck = new Deck(sortedDeckString);
 
-    @Test(expected = IllegalArgumentException.class)
-    public void missingCardsThrowsIllegalArgumentException() {
+    @Test(expected = InvalidParameterException.class)
+    public void missingCardsThrowsInvalidParameterException() {
         new Deck(String.join("",
                 "Ac 2c 3c 4c 5c 6c 7c 8c 9c Tc Jc Qc Kc ",
                 "Ad 2d 3d 4d 5d 6d 7d 8d 9d Td Jd Qd Kd ",
@@ -36,8 +37,8 @@ public class DeckTest {
         ));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void duplicateCardsThrowsIllegalArgumentException() {
+    @Test(expected = InvalidParameterException.class)
+    public void duplicateCardsThrowsInvalidParameterException() {
         new Deck(String.join("",
                 "Ac 2c 3c 4c 5c 6c 7c 8c 9c Tc Jc Qc Kc ",
                 "Ad 2d 3d 4d 5d 6d 7d 8d 9d Td Jd Qd Kd ",
@@ -132,7 +133,7 @@ public class DeckTest {
 
     @Test
     public void unclearableMasksAreValid() {
-        for (int i=0; i<Pyramid.allPyramidFlags.length; i++) {
+        for (int i = 0; i < Pyramid.allPyramidFlags.length; i++) {
             long pyramidFlags = Pyramid.allPyramidFlags[i];
             int[] allIndexes = Pyramid.allExistingIndexes.get(i);
             long[] expected = unclearableMasks(allIndexes, sortedDeck);
