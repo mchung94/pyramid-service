@@ -13,12 +13,10 @@ queues for distributed worker processes to solve the more complicated puzzles.
 I've been curious about how to write code to find optimal solutions to
 [Pyramid Solitaire](https://en.wikipedia.org/wiki/Pyramid_(card_game)) which is
 one of my favorite solitaire card games.  The hard part about writing a
-program to solve these games is to optimize it.  My initial straightforward
-implementations of Breadth-First Search or A\* took an hour and 28GB of memory
-to solve the hardest game I found so far (actually an unsolvable game where
-the program has to determine that there is no solution).  I've improved the
-performance about 50x and reduced memory usage to the point where it can
-process the same game in 45 seconds on an 8GB laptop.
+program to solve these games is to optimize it.  I've improved the
+performance about 50x compared to straightforward implementations of
+Breadth-First Search and A\*, and reduced memory usage to the point where it
+can run well on a laptop with 8GB of RAM.
 
 Earlier, I created
 [Solitaire Player](https://github.com/mchung94/solitaire-player),
@@ -41,7 +39,7 @@ so you may need to change this.
 
 ### Steps
 1. Run `gradlew bootJar`, the executable jar will be in build/libs/pyramid-service-0.1.0.jar
-2. Point it to your own version of [application.properties](src/main/resources/application.properties) 
+2. Make a copy of of [application.properties](src/main/resources/application.properties) and put it [where Spring will load it](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html#boot-features-external-config-application-property-files).
 3. Run `java -jar pyramid-service-0.1.0.jar`
 4. As an example, in your browser, go to
 [http://localhost:8080/pyramid-solitaire/solver/board?deck=ThJsJh9cQd5c2d9hTd4hQs9d3s8dKh6c3h6d8cKcAhQhTc9sKd8s4s2c4cJc7cJd8h6s5d3c4d3d6hTs5sKs7dAc7s2sQc2h5hAs7hAd](http://localhost:8080/pyramid-solitaire/solver/Board?deck=ThJsJh9cQd5c2d9hTd4hQs9d3s8dKh6c3h6d8cKcAhQhTc9sKd8s4s2c4cJc7cJd8h6s5d3c4d3d6hTs5sKs7dAc7s2sQc2h5hAs7hAd)
@@ -276,10 +274,11 @@ Solitaire Collection's challenges with these endpoints:
     mind, use goalScore=1290&currentScore=0.
 - Card Challenges (removing cards of a given rank)
   - /pyramid-solitaire/solver/card?goalNumberToRemove=4&rankToRemove=J&currentNumberRemoved=1&deck=...
-  - It needs three query parameters:
+  - It needs four query parameters:
     - rankToRemove (one of A 2 3 4 5 6 7 8 9 T J Q K)
     - goalNumberToRemove
     - currentNumberRemoved
+    - deck
   - This will find the best way to remove the cards to reach the goal.
     For example, with goalNumberToRemove=4, rankToRemove=J, and
     currentNumberRemoved=1, it means your goal is to remove 4 Jacks, and you've
@@ -288,4 +287,5 @@ Solitaire Collection's challenges with these endpoints:
     while clearing the board, or remove 2 Jacks without clearing the board, it
     doesn't know which is better (not clearing the board means having to use
     limited re-deals) so it returns both solutions.
+
 
