@@ -7,18 +7,23 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
 
+/**
+ * The goal of a Score Challenge is to reach a certain score.  The maximum
+ * score possible is 1290.
+ */
 @Entity
-@Table(name="score_challenges")
+@Table(name = "score_challenges")
 public class ScoreChallenge extends Challenge {
     @NotNull
-    @Size(min=104, max=104)
-    @Column(name="deck_string", nullable=false, updatable=false, columnDefinition="varchar(104)")
+    @Size(min = 104, max = 104)
+    @Column(name = "deck_string", nullable = false, updatable = false, columnDefinition = "varchar(104)")
     private String deckString;
 
-    @Column(name="goal_score", nullable=false, updatable=false, columnDefinition="int")
+    @Column(name = "goal_score", nullable = false, updatable = false, columnDefinition = "int")
     private Integer goalScore;
 
-    protected ScoreChallenge() {}
+    protected ScoreChallenge() {
+    }
 
     public ScoreChallenge(String deckString, Integer goalScore, List<Solution> solutions) {
         this.deckString = deckString;

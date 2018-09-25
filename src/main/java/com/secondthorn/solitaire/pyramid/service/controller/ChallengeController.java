@@ -2,7 +2,6 @@ package com.secondthorn.solitaire.pyramid.service.controller;
 
 import com.secondthorn.solitaire.pyramid.service.model.BoardChallenge;
 import com.secondthorn.solitaire.pyramid.service.model.CardChallenge;
-import com.secondthorn.solitaire.pyramid.service.model.Challenge;
 import com.secondthorn.solitaire.pyramid.service.model.ScoreChallenge;
 import com.secondthorn.solitaire.pyramid.service.model.Solution;
 import com.secondthorn.solitaire.pyramid.service.repository.ChallengeRepository;
@@ -16,6 +15,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * This is the main service controller for solving Pyramid Solitaire games.
+ * It is designed to give solutions to Board/Score/Card challenges like in
+ * Microsoft Solitaire Collection.  Otherwise, the players can just choose if
+ * they want to maximize the score (score challenge with goal score of 1290) or
+ * clear the board in as few steps as possible (board challenge).
+ */
 @RestController
 public class ChallengeController {
     private ChallengeRepository challengeRepository;

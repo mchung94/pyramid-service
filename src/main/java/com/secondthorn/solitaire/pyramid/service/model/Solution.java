@@ -15,6 +15,11 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import java.util.List;
 
+/**
+ * A Solution is a list of steps to finish a Pyramid Solitaire game.  There can
+ * be multiple solutions for a game (not just one best one) if the solver can't
+ * decide which is the best.
+ */
 @Entity
 @Table(name = "solutions")
 public class Solution {

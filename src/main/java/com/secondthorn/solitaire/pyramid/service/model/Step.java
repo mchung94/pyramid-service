@@ -12,6 +12,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+/**
+ * A step is an action to take during a Pyramid Solitaire game.  The possible
+ * steps are:
+ * 1. Draw (move a card from the stock pile to the waste pile)
+ * 2. Recycle (recycle the waste pile back into the stock pile)
+ * 3. Remove one King.
+ * 4. Remove two cards that add up to 13.
+ */
 @Entity
 @Table(name = "steps",
         uniqueConstraints = @UniqueConstraint(columnNames = {

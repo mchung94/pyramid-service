@@ -24,9 +24,11 @@ import java.util.List;
 @Table(name = "challenges")
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Challenge {
-    // the deck is common to all subclasses, but it's with the subclasses
-    // because some require it to be unique and others require allowing
-    // duplicate decks.
+    /**
+     * The deck of cards is common to all subclasses, but the field definition
+     * is with the subclasses because some require it to be unique and others
+     * require allowing duplicate decks.
+     */
     public abstract String getDeckString();
 
     @Id
