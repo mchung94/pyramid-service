@@ -13,12 +13,14 @@ import static org.hamcrest.Matchers.is;
 public class ScoreChallengeSolverTest {
     @Test(expected = IllegalArgumentException.class)
     public void currentScoreHigherThanGoalScore() {
-        new ScoreChallengeSolver(1290, 2580);
+        int goalScore = 1290;
+        int currentScore = 2580;
+        new ScoreChallengeSolver(goalScore - currentScore);
     }
 
     @Test
     public void testForShortAnswerNonMaximalPoints() {
-        ScoreChallengeSolver solver = new ScoreChallengeSolver(1225, 0);
+        ScoreChallengeSolver solver = new ScoreChallengeSolver(1225);
         String cards = "Kd Kc Qh Ah 7d 6d 8d 5d 9d 4d Td 3d Jd 2d Qd Ad 7c 6c 8c 5c 9c 4c Tc 3c Jc 2c " +
                 "Qc Ac 6h 7h 5h 8h 4h 9h 3h Th 2h Jh Kh As 2s 3s 4s 5s 6s 7s 8s 9s Ts Js Qs Ks";
         Deck deck = new Deck(cards);

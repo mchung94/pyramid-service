@@ -17,11 +17,11 @@ import java.util.List;
  * to clear the board the solution will do it.
  */
 public class ScoreChallengeSolver extends BFSSolver {
-    private static final int MAX_POSSIBLE_SCORE = 1290;
-    private int goalPoints;
+    public static final int MAX_POSSIBLE_SCORE = 1290;
+    private int numPoints;
 
     public ScoreChallengeSolver() {
-        goalPoints = MAX_POSSIBLE_SCORE;
+        numPoints = MAX_POSSIBLE_SCORE;
     }
 
     /**
@@ -29,11 +29,11 @@ public class ScoreChallengeSolver extends BFSSolver {
      * in as few steps as possible.  Throws an IllegalArgumentException if the
      * goal score has already been reached.
      */
-    public ScoreChallengeSolver(int goalScore, int currentScore) {
-        if (currentScore >= goalScore) {
+    public ScoreChallengeSolver(int numPoints) {
+        if (numPoints < 0) {
             throw new IllegalArgumentException("The current score must be smaller than the goal score");
         }
-        goalPoints = goalScore - currentScore;
+        this.numPoints = numPoints;
     }
 
     /**
@@ -52,7 +52,7 @@ public class ScoreChallengeSolver extends BFSSolver {
             long state = fringe.dequeue();
             long[] successorMasks = deck.getSuccessorMasks(state);
             int score = score(state, deck);
-            if (score >= goalPoints) {
+            if (score >= numPoints) {
                 // stop searching, we reached the goal score
                 bestState = state;
                 bestScore = score;

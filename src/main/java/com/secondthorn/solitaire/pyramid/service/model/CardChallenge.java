@@ -22,25 +22,25 @@ public class CardChallenge extends Challenge {
     @Column(name = "goal_rank", nullable = false, updatable = false, columnDefinition = "char")
     private Character goalRank;
 
-    @Column(name = "goal_num", nullable = false, updatable = false, columnDefinition = "int")
-    private Integer goalNum;
+    @Column(name = "num_to_remove", nullable = false, updatable = false, columnDefinition = "int")
+    private Integer numToRemove;
 
     protected CardChallenge() {
     }
 
-    public CardChallenge(String deckString, Character goalRank, Integer goalNum, List<Solution> solutions) {
+    public CardChallenge(String deckString, Character goalRank, Integer numToRemove, List<Solution> solutions) {
         super(solutions);
         this.deckString = deckString;
         this.goalRank = goalRank;
-        this.goalNum = goalNum;
+        this.numToRemove = numToRemove;
     }
 
     public Character getGoalRank() {
         return goalRank;
     }
 
-    public Integer getGoalNum() {
-        return goalNum;
+    public Integer getNumToRemove() {
+        return numToRemove;
     }
 
     @Override

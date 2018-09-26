@@ -15,24 +15,24 @@ public class ScoreChallenge extends Challenge {
     @Column(name = "deck_string", nullable = false, updatable = false, columnDefinition = "varchar(104)")
     private String deckString;
 
-    @Column(name = "goal_score", nullable = false, updatable = false, columnDefinition = "int")
-    private Integer goalScore;
+    @Column(name = "num_points", nullable = false, updatable = false, columnDefinition = "int")
+    private Integer numPoints;
 
     protected ScoreChallenge() {
     }
 
-    public ScoreChallenge(String deckString, Integer goalScore, List<Solution> solutions) {
+    public ScoreChallenge(String deckString, Integer numPoints, List<Solution> solutions) {
         super(solutions);
         this.deckString = deckString;
-        this.goalScore = goalScore;
-    }
-
-    public Integer getGoalScore() {
-        return goalScore;
+        this.numPoints = numPoints;
     }
 
     @Override
     public String getDeckString() {
         return deckString;
+    }
+
+    public Integer getNumPoints() {
+        return numPoints;
     }
 }

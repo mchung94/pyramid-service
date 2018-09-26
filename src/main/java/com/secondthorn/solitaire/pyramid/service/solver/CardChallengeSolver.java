@@ -25,24 +25,24 @@ import java.util.List;
  */
 
 public class CardChallengeSolver extends BFSSolver {
-    private int numCardsToClear;
-    private char cardRankToClear;
-    private int cardRankValueToClear;
+    private int numToRemove;
+    private char rankToRemove;
+    private int rankValueToRemove;
 
     /**
      * Create a pyramid solitaire solver that tries to remove the cards of the
      * goal rank.  Throws an IllegalArgumentException if the goal has already
      * been reached or if the rank isn't valid.
      */
-    public CardChallengeSolver(int goalNumCardsToClear, char cardRankToClear, int currentNumCardsCleared) {
-        if (currentNumCardsCleared > goalNumCardsToClear) {
+    public CardChallengeSolver(int numToRemove, char rankToRemove) {
+        if (numToRemove < 0) {
             throw new IllegalArgumentException("The current number of cards cleared must be smaller than the goal");
         }
-        this.numCardsToClear = goalNumCardsToClear - currentNumCardsCleared;
-        this.cardRankToClear = cardRankToClear;
-        this.cardRankValueToClear = "A23456789TJQK".indexOf(cardRankToClear) + 1;
-        if (this.cardRankValueToClear == 0) {
-            throw new IllegalArgumentException("The card rank " + cardRankToClear + " is invalid.  " +
+        this.numToRemove = numToRemove;
+        this.rankToRemove = rankToRemove;
+        this.rankValueToRemove = "A23456789TJQK".indexOf(rankToRemove) + 1;
+        if (this.rankValueToRemove == 0) {
+            throw new IllegalArgumentException("The card rank " + rankToRemove + " is invalid.  " +
                     "It must be one of A 2 3 4 5 6 7 8 9 T J Q K.");
         }
     }
@@ -76,8 +76,8 @@ public class CardChallengeSolver extends BFSSolver {
         fringe.enqueue(State.INITIAL_STATE);
         while (!fringe.isEmpty()) {
             long state = fringe.dequeue();
-            int score = numCardsOfRankRemoved(state, cardRankValueToClear, deck);
-            if (score == numCardsToClear) {
+            int score = numCardsOfRankRemoved(state, rankValueToRemove, deck);
+            if (score == numToRemove) {
                 goalReachedState = state;
                 goalReachedScore = score;
                 break;
@@ -154,7 +154,7 @@ public class CardChallengeSolver extends BFSSolver {
     // Make a human-readable solution description
     private String description(int numCardsCleared) {
         String cards = (numCardsCleared == 1) ? "card" : "cards";
-        return "Remove " + numCardsCleared + " " + cards + " of rank " + cardRankToClear + ".";
+        return "Remove " + numCardsCleared + " " + cards + " of rank " + rankToRemove + ".";
     }
 
     private int numCardsOfRankRemoved(long state, int rankValue, Deck deck) {
