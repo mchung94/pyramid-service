@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * A Controller for handling Pyramid Solitaire Card Challenge requests.
+ */
 @RestController
 public class CardChallengeController extends ChallengeController {
     private CardChallengeRepository repository;
@@ -22,6 +25,14 @@ public class CardChallengeController extends ChallengeController {
         this.repository = repository;
     }
 
+    /**
+     * Each Card Challenge requires a valid deck of cards, a card rank to be
+     * removed, and numbers indicating how many of that card has been removed
+     * so far and how many need to be removed to win the challenge.  For
+     * example, a goal could be "Remove 4 Aces" and you've removed two already
+     * before the start of the game.  Then the actual goal is to remove two
+     * more Aces.
+     */
     class CardChallengeParameters implements ChallengeParameters {
         private String deckString;
         private char goalRank;
@@ -70,6 +81,9 @@ public class CardChallengeController extends ChallengeController {
         }
     }
 
+    /**
+     * Retrieve a Card Challenge's solution if it exists.
+     */
     @GetMapping("/pyramid-solitaire/solver/card")
     public List<Solution> getCardChallenge(@RequestParam(value = "deck") String deckString,
                                            @RequestParam(value = "rankToRemove") char goalRank,
@@ -79,6 +93,11 @@ public class CardChallengeController extends ChallengeController {
         return getChallenge(params);
     }
 
+    /**
+     * Post a new Card Challenge to be solved.
+     * It'll just return the answer if it's already been solved, otherwise it
+     * will solve the challenge and return the solution.
+     */
     @PostMapping("/pyramid-solitaire/solver/card")
     public List<Solution> postCardChallenge(@RequestParam(value = "deck") String deckString,
                                             @RequestParam(value = "rankToRemove") char goalRank,

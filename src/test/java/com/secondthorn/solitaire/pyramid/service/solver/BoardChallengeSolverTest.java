@@ -4,7 +4,6 @@ import com.secondthorn.solitaire.pyramid.service.model.Solution;
 import org.junit.Test;
 
 import java.util.List;
-import java.util.Set;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;

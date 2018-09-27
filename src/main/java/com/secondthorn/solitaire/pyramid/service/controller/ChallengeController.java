@@ -27,12 +27,25 @@ public abstract class ChallengeController {
         void validate() throws InvalidParameterException;
     }
 
+    /**
+     * Query and return a Challenge from the database, or null if not found.
+     */
     protected abstract Challenge queryChallenge(ChallengeParameters params);
 
+    /**
+     * Return a string description of the challenge based on its parameters.
+     * It should mention which type of challenge it is (Board/Score/Card)
+     * as well as what parameters it has.
+     */
     protected abstract String challengeDescription(ChallengeParameters params);
 
+    /**
+     * Create an appropriate Challenge instance given the parameters, generate
+     * the solution, and save it all into the database.
+     */
     protected abstract void saveNewChallenge(ChallengeParameters params);
 
+    // The overall process to GET a challenge, customized per challenge type.
     protected List<Solution> getChallenge(ChallengeParameters params) {
         params.validate();
         Challenge challenge = queryChallenge(params);
@@ -43,6 +56,7 @@ public abstract class ChallengeController {
         return challenge.getSolutions();
     }
 
+    // The overall process to POST a challenge, customized per challenge type.
     protected List<Solution> postChallenge(ChallengeParameters params) {
         params.validate();
         Challenge challenge = queryChallenge(params);

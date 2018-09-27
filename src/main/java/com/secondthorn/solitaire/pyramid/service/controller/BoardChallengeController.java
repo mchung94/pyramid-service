@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * A Controller for handling Pyramid Solitaire Board Challenge requests.
+ */
 @RestController
 public class BoardChallengeController extends ChallengeController {
     private BoardChallengeRepository repository;
@@ -22,6 +25,9 @@ public class BoardChallengeController extends ChallengeController {
         this.repository = repository;
     }
 
+    /**
+     * Each Board Challenge requires a valid deck of cards.
+     */
     class BoardChallengeParameters implements ChallengeParameters {
         private String deckString;
 
@@ -38,12 +44,20 @@ public class BoardChallengeController extends ChallengeController {
         }
     }
 
+    /**
+     * Retrieve a Board Challenge's solution if it exists.
+     */
     @GetMapping("/pyramid-solitaire/solver/board")
     public List<Solution> getBoardChallenge(@RequestParam(value = "deck") String deckString) {
         BoardChallengeParameters params = new BoardChallengeParameters(deckString);
         return getChallenge(params);
     }
 
+    /**
+     * Post a new Board Challenge to be solved.
+     * It'll just return the answer if it's already been solved, otherwise it
+     * will solve the challenge and return the solution.
+     */
     @PostMapping("/pyramid-solitaire/solver/board")
     public List<Solution> postBoardChallenge(@RequestParam(value = "deck") String deckString) {
         BoardChallengeParameters params = new BoardChallengeParameters(deckString);
