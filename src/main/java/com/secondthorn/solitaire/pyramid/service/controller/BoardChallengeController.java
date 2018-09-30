@@ -7,6 +7,7 @@ import com.secondthorn.solitaire.pyramid.service.model.Solution;
 import com.secondthorn.solitaire.pyramid.service.repository.BoardChallengeRepository;
 import com.secondthorn.solitaire.pyramid.service.solver.BoardChallengeSolver;
 import com.secondthorn.solitaire.pyramid.service.solver.Deck;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -48,7 +49,7 @@ public class BoardChallengeController extends ChallengeController {
      * Retrieve a Board Challenge's solution if it exists.
      */
     @GetMapping("/pyramid-solitaire/solver/board")
-    public List<Solution> getBoardChallenge(@RequestParam(value = "deck") String deckString) {
+    public ResponseEntity<List<Solution>> getBoardChallenge(@RequestParam(value = "deck") String deckString) {
         BoardChallengeParameters params = new BoardChallengeParameters(deckString);
         return getChallenge(params);
     }
@@ -59,7 +60,7 @@ public class BoardChallengeController extends ChallengeController {
      * will solve the challenge and return the solution.
      */
     @PostMapping("/pyramid-solitaire/solver/board")
-    public List<Solution> postBoardChallenge(@RequestParam(value = "deck") String deckString) {
+    public ResponseEntity<List<Solution>> postBoardChallenge(@RequestParam(value = "deck") String deckString) {
         BoardChallengeParameters params = new BoardChallengeParameters(deckString);
         return postChallenge(params);
     }

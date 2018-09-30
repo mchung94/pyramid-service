@@ -7,6 +7,7 @@ import com.secondthorn.solitaire.pyramid.service.model.Solution;
 import com.secondthorn.solitaire.pyramid.service.repository.CardChallengeRepository;
 import com.secondthorn.solitaire.pyramid.service.solver.CardChallengeSolver;
 import com.secondthorn.solitaire.pyramid.service.solver.Deck;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -85,10 +86,11 @@ public class CardChallengeController extends ChallengeController {
      * Retrieve a Card Challenge's solution if it exists.
      */
     @GetMapping("/pyramid-solitaire/solver/card")
-    public List<Solution> getCardChallenge(@RequestParam(value = "deck") String deckString,
-                                           @RequestParam(value = "rankToRemove") char goalRank,
-                                           @RequestParam(value = "goalNumberToRemove") int goalNum,
-                                           @RequestParam(value = "currentNumberRemoved") int currentNum) {
+    public ResponseEntity<List<Solution>> getCardChallenge(
+            @RequestParam(value = "deck") String deckString,
+            @RequestParam(value = "rankToRemove") char goalRank,
+            @RequestParam(value = "goalNumberToRemove") int goalNum,
+            @RequestParam(value = "currentNumberRemoved") int currentNum) {
         CardChallengeParameters params = new CardChallengeParameters(deckString, goalRank, goalNum, currentNum);
         return getChallenge(params);
     }
@@ -99,10 +101,11 @@ public class CardChallengeController extends ChallengeController {
      * will solve the challenge and return the solution.
      */
     @PostMapping("/pyramid-solitaire/solver/card")
-    public List<Solution> postCardChallenge(@RequestParam(value = "deck") String deckString,
-                                            @RequestParam(value = "rankToRemove") char goalRank,
-                                            @RequestParam(value = "goalNumberToRemove") int goalNum,
-                                            @RequestParam(value = "currentNumberRemoved") int currentNum) {
+    public ResponseEntity<List<Solution>> postCardChallenge(
+            @RequestParam(value = "deck") String deckString,
+            @RequestParam(value = "rankToRemove") char goalRank,
+            @RequestParam(value = "goalNumberToRemove") int goalNum,
+            @RequestParam(value = "currentNumberRemoved") int currentNum) {
         CardChallengeParameters params = new CardChallengeParameters(deckString, goalRank, goalNum, currentNum);
         return postChallenge(params);
     }

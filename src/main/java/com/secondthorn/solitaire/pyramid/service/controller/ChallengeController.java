@@ -1,9 +1,11 @@
 package com.secondthorn.solitaire.pyramid.service.controller;
 
-import com.secondthorn.solitaire.pyramid.service.exception.SolutionNotFoundException;
 import com.secondthorn.solitaire.pyramid.service.exception.InvalidParameterException;
+import com.secondthorn.solitaire.pyramid.service.exception.SolutionNotFoundException;
 import com.secondthorn.solitaire.pyramid.service.model.Challenge;
 import com.secondthorn.solitaire.pyramid.service.model.Solution;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -46,23 +48,27 @@ public abstract class ChallengeController {
     protected abstract void saveNewChallenge(ChallengeParameters params);
 
     // The overall process to GET a challenge, customized per challenge type.
-    protected List<Solution> getChallenge(ChallengeParameters params) {
+    protected ResponseEntity<List<Solution>> getChallenge(ChallengeParameters params) {
         params.validate();
         Challenge challenge = queryChallenge(params);
-        if (challenge == null) {
-            String message = challengeDescription(params) + " was not found.";
+        if (!hasSolutions(challenge)) {
+            String message = "Solutions for " + challengeDescription(params) + " were not found.";
             throw new SolutionNotFoundException(message);
         }
-        return challenge.getSolutions();
+        return new ResponseEntity(challenge.getSolutions(), HttpStatus.OK);
     }
 
     // The overall process to POST a challenge, customized per challenge type.
-    protected List<Solution> postChallenge(ChallengeParameters params) {
+    protected ResponseEntity<List<Solution>> postChallenge(ChallengeParameters params) {
         params.validate();
         Challenge challenge = queryChallenge(params);
         if (challenge == null) {
             saveNewChallenge(params);
         }
         return getChallenge(params);
+    }
+
+    protected boolean hasSolutions(Challenge challenge) {
+        return (challenge != null) && (challenge.getSolutions() != null);
     }
 }

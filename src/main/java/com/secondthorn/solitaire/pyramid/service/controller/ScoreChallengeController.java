@@ -7,6 +7,7 @@ import com.secondthorn.solitaire.pyramid.service.model.Solution;
 import com.secondthorn.solitaire.pyramid.service.repository.ScoreChallengeRepository;
 import com.secondthorn.solitaire.pyramid.service.solver.Deck;
 import com.secondthorn.solitaire.pyramid.service.solver.ScoreChallengeSolver;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -86,9 +87,10 @@ public class ScoreChallengeController extends ChallengeController {
      * Retrieve a Score Challenge's solution if it exists.
      */
     @GetMapping("/pyramid-solitaire/solver/score")
-    public List<Solution> getScoreChallenge(@RequestParam(value = "deck") String deckString,
-                                            @RequestParam(value = "goalScore", required = false) Integer goalScore,
-                                            @RequestParam(value = "currentScore", required = false) Integer currentScore) {
+    public ResponseEntity<List<Solution>> getScoreChallenge(
+            @RequestParam(value = "deck") String deckString,
+            @RequestParam(value = "goalScore", required = false) Integer goalScore,
+            @RequestParam(value = "currentScore", required = false) Integer currentScore) {
         ScoreChallengeParameters params = new ScoreChallengeParameters(deckString, goalScore, currentScore);
         return getChallenge(params);
     }
@@ -99,9 +101,10 @@ public class ScoreChallengeController extends ChallengeController {
      * will solve the challenge and return the solution.
      */
     @PostMapping("/pyramid-solitaire/solver/score")
-    public List<Solution> postScoreChallenge(@RequestParam(value = "deck") String deckString,
-                                             @RequestParam(value = "goalScore", required = false) Integer goalScore,
-                                             @RequestParam(value = "currentScore", required = false) Integer currentScore) {
+    public ResponseEntity<List<Solution>> postScoreChallenge(
+            @RequestParam(value = "deck") String deckString,
+            @RequestParam(value = "goalScore", required = false) Integer goalScore,
+            @RequestParam(value = "currentScore", required = false) Integer currentScore) {
         ScoreChallengeParameters params = new ScoreChallengeParameters(deckString, goalScore, currentScore);
         return postChallenge(params);
     }
