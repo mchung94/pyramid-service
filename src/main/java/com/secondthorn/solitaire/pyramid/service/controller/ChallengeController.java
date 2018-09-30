@@ -4,9 +4,10 @@ import com.secondthorn.solitaire.pyramid.service.exception.InvalidParameterExcep
 import com.secondthorn.solitaire.pyramid.service.exception.SolutionNotFoundException;
 import com.secondthorn.solitaire.pyramid.service.model.Challenge;
 import com.secondthorn.solitaire.pyramid.service.model.Solution;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 /**
@@ -45,30 +46,34 @@ public abstract class ChallengeController {
      * Create an appropriate Challenge instance given the parameters, generate
      * the solution, and save it all into the database.
      */
-    protected abstract void saveNewChallenge(ChallengeParameters params);
+    protected abstract Challenge saveNewChallenge(ChallengeParameters params);
 
-    // The overall process to GET a challenge, customized per challenge type.
-    protected ResponseEntity<List<Solution>> getChallenge(ChallengeParameters params) {
+    // The process to GET challenge solutions, customized per challenge type.
+    protected ResponseEntity<List<Solution>> getChallengeSolutions(ChallengeParameters params) {
         params.validate();
         Challenge challenge = queryChallenge(params);
         if (!hasSolutions(challenge)) {
             String message = "Solutions for " + challengeDescription(params) + " were not found.";
             throw new SolutionNotFoundException(message);
         }
-        return new ResponseEntity(challenge.getSolutions(), HttpStatus.OK);
+        return ResponseEntity.ok(challenge.getSolutions());
     }
 
-    // The overall process to POST a challenge, customized per challenge type.
-    protected ResponseEntity<List<Solution>> postChallenge(ChallengeParameters params) {
+    // The process to POST a challenge, customized per challenge type.
+    protected ResponseEntity<List<Solution>> postChallenge(ChallengeParameters params, UriComponentsBuilder ucb) {
         params.validate();
         Challenge challenge = queryChallenge(params);
-        if (challenge == null) {
-            saveNewChallenge(params);
+        if (hasSolutions(challenge)) {
+            return ResponseEntity.ok(challenge.getSolutions());
         }
-        return getChallenge(params);
+        if (challenge == null) {
+            challenge = saveNewChallenge(params);
+        }
+        URI uri = ucb.path("/pyramid-solitaire/solver/tasks/" + challenge.getId()).build().toUri();
+        return ResponseEntity.accepted().location(uri).build();
     }
 
     protected boolean hasSolutions(Challenge challenge) {
-        return (challenge != null) && (challenge.getSolutions() != null);
+        return (challenge != null) && (challenge.getSolutions() != null) && (challenge.getSolutions().size() > 0);
     }
 }

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
@@ -92,7 +93,7 @@ public class ScoreChallengeController extends ChallengeController {
             @RequestParam(value = "goalScore", required = false) Integer goalScore,
             @RequestParam(value = "currentScore", required = false) Integer currentScore) {
         ScoreChallengeParameters params = new ScoreChallengeParameters(deckString, goalScore, currentScore);
-        return getChallenge(params);
+        return getChallengeSolutions(params);
     }
 
     /**
@@ -104,9 +105,10 @@ public class ScoreChallengeController extends ChallengeController {
     public ResponseEntity<List<Solution>> postScoreChallenge(
             @RequestParam(value = "deck") String deckString,
             @RequestParam(value = "goalScore", required = false) Integer goalScore,
-            @RequestParam(value = "currentScore", required = false) Integer currentScore) {
+            @RequestParam(value = "currentScore", required = false) Integer currentScore,
+            UriComponentsBuilder ucb) {
         ScoreChallengeParameters params = new ScoreChallengeParameters(deckString, goalScore, currentScore);
-        return postChallenge(params);
+        return postChallenge(params, ucb);
     }
 
     protected Challenge queryChallenge(ChallengeParameters params) {
@@ -124,11 +126,10 @@ public class ScoreChallengeController extends ChallengeController {
                 "currentScore (" + currentScore + ")";
     }
 
-    protected void saveNewChallenge(ChallengeParameters params) {
+    protected Challenge saveNewChallenge(ChallengeParameters params) {
         String deckString = ((ScoreChallengeParameters) params).getDeckString();
         int pointsUntilGoal = ((ScoreChallengeParameters) params).getPointsUntilGoal();
         ScoreChallenge challenge = new ScoreChallenge(deckString, pointsUntilGoal);
-        challenge.solve();
-        repository.save(challenge);
+        return repository.save(challenge);
     }
 }

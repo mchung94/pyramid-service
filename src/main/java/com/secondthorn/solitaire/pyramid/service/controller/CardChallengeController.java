@@ -5,13 +5,13 @@ import com.secondthorn.solitaire.pyramid.service.model.CardChallenge;
 import com.secondthorn.solitaire.pyramid.service.model.Challenge;
 import com.secondthorn.solitaire.pyramid.service.model.Solution;
 import com.secondthorn.solitaire.pyramid.service.repository.CardChallengeRepository;
-import com.secondthorn.solitaire.pyramid.service.solver.CardChallengeSolver;
 import com.secondthorn.solitaire.pyramid.service.solver.Deck;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
@@ -92,7 +92,7 @@ public class CardChallengeController extends ChallengeController {
             @RequestParam(value = "goalNumberToRemove") int goalNum,
             @RequestParam(value = "currentNumberRemoved") int currentNum) {
         CardChallengeParameters params = new CardChallengeParameters(deckString, goalRank, goalNum, currentNum);
-        return getChallenge(params);
+        return getChallengeSolutions(params);
     }
 
     /**
@@ -105,9 +105,10 @@ public class CardChallengeController extends ChallengeController {
             @RequestParam(value = "deck") String deckString,
             @RequestParam(value = "rankToRemove") char goalRank,
             @RequestParam(value = "goalNumberToRemove") int goalNum,
-            @RequestParam(value = "currentNumberRemoved") int currentNum) {
+            @RequestParam(value = "currentNumberRemoved") int currentNum,
+            UriComponentsBuilder ucb) {
         CardChallengeParameters params = new CardChallengeParameters(deckString, goalRank, goalNum, currentNum);
-        return postChallenge(params);
+        return postChallenge(params, ucb);
     }
 
     protected Challenge queryChallenge(ChallengeParameters params) {
@@ -128,13 +129,12 @@ public class CardChallengeController extends ChallengeController {
                 "currentNumberRemoved (" + currentNum + ")";
     }
 
-    protected void saveNewChallenge(ChallengeParameters params) {
+    protected Challenge saveNewChallenge(ChallengeParameters params) {
         String deckString = ((CardChallengeParameters) params).getDeckString();
         char goalRank = ((CardChallengeParameters) params).getGoalRank();
         int numUntilGoal = ((CardChallengeParameters) params).getNumToRemove();
         CardChallenge challenge = new CardChallenge(deckString, goalRank, numUntilGoal);
-        challenge.solve();
-        repository.save(challenge);
+        return repository.save(challenge);
     }
 
 }

@@ -6,7 +6,6 @@ import com.secondthorn.solitaire.pyramid.service.solver.Deck;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.util.List;
 
 /**
  * The goal of a Card Challenge is to remove cards of a certain rank.  The goal
@@ -55,5 +54,18 @@ public class CardChallenge extends Challenge {
         Deck deck = new Deck(deckString);
         CardChallengeSolver solver = new CardChallengeSolver(numToRemove, goalRank);
         setSolutions(solver.solve(deck));
+    }
+
+    @Override
+    public String getUriPath() {
+        return "/pyramid-solitaire/solver/card";
+    }
+
+    @Override
+    public String getUriQuery() {
+        return "rankToRemove=" + goalRank + "&" +
+                "goalNumberToRemove=" + numToRemove + "&" +
+                "currentNumberRemoved=0&" +
+                "deck=" + deckString;
     }
 }

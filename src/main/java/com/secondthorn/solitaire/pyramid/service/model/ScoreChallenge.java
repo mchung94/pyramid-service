@@ -6,7 +6,6 @@ import com.secondthorn.solitaire.pyramid.service.solver.ScoreChallengeSolver;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.util.List;
 
 /**
  * The goal of a Score Challenge is to reach a certain score.  The maximum
@@ -43,5 +42,15 @@ public class ScoreChallenge extends Challenge {
         Deck deck = new Deck(deckString);
         ScoreChallengeSolver solver = new ScoreChallengeSolver(numPoints);
         setSolutions(solver.solve(deck));
+    }
+
+    @Override
+    public String getUriPath() {
+        return "/pyramid-solitaire/solver/score";
+    }
+
+    @Override
+    public String getUriQuery() {
+        return "goalScore=" + numPoints + "&" + "currentScore=0&" + "deck=" + deckString;
     }
 }

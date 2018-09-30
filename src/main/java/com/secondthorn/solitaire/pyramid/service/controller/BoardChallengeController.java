@@ -5,13 +5,13 @@ import com.secondthorn.solitaire.pyramid.service.model.BoardChallenge;
 import com.secondthorn.solitaire.pyramid.service.model.Challenge;
 import com.secondthorn.solitaire.pyramid.service.model.Solution;
 import com.secondthorn.solitaire.pyramid.service.repository.BoardChallengeRepository;
-import com.secondthorn.solitaire.pyramid.service.solver.BoardChallengeSolver;
 import com.secondthorn.solitaire.pyramid.service.solver.Deck;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
@@ -51,7 +51,7 @@ public class BoardChallengeController extends ChallengeController {
     @GetMapping("/pyramid-solitaire/solver/board")
     public ResponseEntity<List<Solution>> getBoardChallenge(@RequestParam(value = "deck") String deckString) {
         BoardChallengeParameters params = new BoardChallengeParameters(deckString);
-        return getChallenge(params);
+        return getChallengeSolutions(params);
     }
 
     /**
@@ -60,9 +60,11 @@ public class BoardChallengeController extends ChallengeController {
      * will solve the challenge and return the solution.
      */
     @PostMapping("/pyramid-solitaire/solver/board")
-    public ResponseEntity<List<Solution>> postBoardChallenge(@RequestParam(value = "deck") String deckString) {
+    public ResponseEntity<List<Solution>> postBoardChallenge(
+            @RequestParam(value = "deck") String deckString,
+            UriComponentsBuilder ucb) {
         BoardChallengeParameters params = new BoardChallengeParameters(deckString);
-        return postChallenge(params);
+        return postChallenge(params, ucb);
     }
 
     protected Challenge queryChallenge(ChallengeParameters params) {
@@ -75,10 +77,9 @@ public class BoardChallengeController extends ChallengeController {
         return "Board Challenge with deck (" + deckString + ")";
     }
 
-    protected void saveNewChallenge(ChallengeParameters params) {
+    protected Challenge saveNewChallenge(ChallengeParameters params) {
         String deckString = ((BoardChallengeParameters) params).getDeckString();
         BoardChallenge challenge = new BoardChallenge(deckString);
-        challenge.solve();
-        repository.save(challenge);
+        return repository.save(challenge);
     }
 }

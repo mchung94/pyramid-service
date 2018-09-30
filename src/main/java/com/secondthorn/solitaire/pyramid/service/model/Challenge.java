@@ -33,6 +33,21 @@ public abstract class Challenge {
      */
     public abstract String getDeckString();
 
+    /**
+     * Calculate (and set) the solutions to the challenge.
+     */
+    public abstract void solve();
+
+    /**
+     * Generate the URI path for the challenge.
+     */
+    public abstract String getUriPath();
+
+    /**
+     * Generate the URI query for the challenge.
+     */
+    public abstract String getUriQuery();
+
     @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -58,8 +73,4 @@ public abstract class Challenge {
         return solutions;
     }
 
-    /**
-     * Calculate (and set) the solutions to the challenge.
-     */
-    public abstract void solve();
 }

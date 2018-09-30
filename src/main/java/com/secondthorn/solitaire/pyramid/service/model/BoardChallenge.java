@@ -6,7 +6,6 @@ import com.secondthorn.solitaire.pyramid.service.solver.Deck;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.util.List;
 
 /**
  * The goal of a Board Challenge is to clear the 28 pyramid cards from the
@@ -36,5 +35,15 @@ public class BoardChallenge extends Challenge {
         Deck deck = new Deck(deckString);
         BoardChallengeSolver solver = new BoardChallengeSolver();
         setSolutions(solver.solve(deck));
+    }
+
+    @Override
+    public String getUriPath() {
+        return "/pyramid-solitaire/solver/board";
+    }
+
+    @Override
+    public String getUriQuery() {
+        return "deck=" + deckString;
     }
 }
