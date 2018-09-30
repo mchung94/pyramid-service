@@ -127,10 +127,8 @@ public class ScoreChallengeController extends ChallengeController {
     protected void saveNewChallenge(ChallengeParameters params) {
         String deckString = ((ScoreChallengeParameters) params).getDeckString();
         int pointsUntilGoal = ((ScoreChallengeParameters) params).getPointsUntilGoal();
-        Deck deck = new Deck(deckString);
-        ScoreChallengeSolver solver = new ScoreChallengeSolver(pointsUntilGoal);
-        List<Solution> solutions = solver.solve(deck);
-        ScoreChallenge challenge = new ScoreChallenge(deckString, pointsUntilGoal, solutions);
+        ScoreChallenge challenge = new ScoreChallenge(deckString, pointsUntilGoal);
+        challenge.solve();
         repository.save(challenge);
     }
 }

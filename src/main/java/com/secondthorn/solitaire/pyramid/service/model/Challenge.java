@@ -43,29 +43,23 @@ public abstract class Challenge {
     @OrderBy("solution_id")
     protected List<Solution> solutions;
 
-    protected Challenge() {
-    }
-
-    public Challenge(List<Solution> solutions) {
-        this.solutions = solutions;
-        connect();
-    }
-
-    /**
-     * Link the @OneToMany relationships so they save properly.
-     */
-    public void connect() {
-        for (Solution solution : solutions) {
-            solution.setChallenge(this);
-            solution.connect();
-        }
-    }
-
     public Long getId() {
         return id;
+    }
+
+    public void setSolutions(List<Solution> solutions) {
+        this.solutions = solutions;
+        for (Solution solution : solutions) {
+            solution.setChallenge(this);
+        }
     }
 
     public List<Solution> getSolutions() {
         return solutions;
     }
+
+    /**
+     * Calculate (and set) the solutions to the challenge.
+     */
+    public abstract void solve();
 }

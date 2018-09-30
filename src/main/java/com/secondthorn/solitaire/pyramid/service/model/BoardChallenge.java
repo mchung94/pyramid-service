@@ -1,5 +1,8 @@
 package com.secondthorn.solitaire.pyramid.service.model;
 
+import com.secondthorn.solitaire.pyramid.service.solver.BoardChallengeSolver;
+import com.secondthorn.solitaire.pyramid.service.solver.Deck;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -19,13 +22,19 @@ public class BoardChallenge extends Challenge {
     protected BoardChallenge() {
     }
 
-    public BoardChallenge(String deckString, List<Solution> solutions) {
-        super(solutions);
+    public BoardChallenge(String deckString) {
         this.deckString = deckString;
     }
 
     @Override
     public String getDeckString() {
         return this.deckString;
+    }
+
+    @Override
+    public void solve() {
+        Deck deck = new Deck(deckString);
+        BoardChallengeSolver solver = new BoardChallengeSolver();
+        setSolutions(solver.solve(deck));
     }
 }

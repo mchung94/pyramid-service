@@ -1,5 +1,8 @@
 package com.secondthorn.solitaire.pyramid.service.model;
 
+import com.secondthorn.solitaire.pyramid.service.solver.CardChallengeSolver;
+import com.secondthorn.solitaire.pyramid.service.solver.Deck;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -28,8 +31,7 @@ public class CardChallenge extends Challenge {
     protected CardChallenge() {
     }
 
-    public CardChallenge(String deckString, Character goalRank, Integer numToRemove, List<Solution> solutions) {
-        super(solutions);
+    public CardChallenge(String deckString, Character goalRank, Integer numToRemove) {
         this.deckString = deckString;
         this.goalRank = goalRank;
         this.numToRemove = numToRemove;
@@ -46,5 +48,12 @@ public class CardChallenge extends Challenge {
     @Override
     public String getDeckString() {
         return deckString;
+    }
+
+    @Override
+    public void solve() {
+        Deck deck = new Deck(deckString);
+        CardChallengeSolver solver = new CardChallengeSolver(numToRemove, goalRank);
+        setSolutions(solver.solve(deck));
     }
 }

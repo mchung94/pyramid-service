@@ -77,10 +77,8 @@ public class BoardChallengeController extends ChallengeController {
 
     protected void saveNewChallenge(ChallengeParameters params) {
         String deckString = ((BoardChallengeParameters) params).getDeckString();
-        Deck deck = new Deck(deckString);
-        BoardChallengeSolver solver = new BoardChallengeSolver();
-        List<Solution> solutions = solver.solve(deck);
-        BoardChallenge challenge = new BoardChallenge(deckString, solutions);
+        BoardChallenge challenge = new BoardChallenge(deckString);
+        challenge.solve();
         repository.save(challenge);
     }
 }

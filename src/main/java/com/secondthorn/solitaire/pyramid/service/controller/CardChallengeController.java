@@ -132,10 +132,8 @@ public class CardChallengeController extends ChallengeController {
         String deckString = ((CardChallengeParameters) params).getDeckString();
         char goalRank = ((CardChallengeParameters) params).getGoalRank();
         int numUntilGoal = ((CardChallengeParameters) params).getNumToRemove();
-        Deck deck = new Deck(deckString);
-        CardChallengeSolver solver = new CardChallengeSolver(numUntilGoal, goalRank);
-        List<Solution> solutions = solver.solve(deck);
-        CardChallenge challenge = new CardChallenge(deckString, goalRank, numUntilGoal, solutions);
+        CardChallenge challenge = new CardChallenge(deckString, goalRank, numUntilGoal);
+        challenge.solve();
         repository.save(challenge);
     }
 
