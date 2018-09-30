@@ -71,7 +71,7 @@ public class BoardChallengeController extends ChallengeController {
 
     protected String challengeDescription(ChallengeParameters params) {
         String deckString = ((BoardChallengeParameters) params).getDeckString();
-        return "Board Challenge for deck (" + deckString + ")";
+        return "Board Challenge with deck (" + deckString + ")";
     }
 
     protected void saveNewChallenge(ChallengeParameters params) {

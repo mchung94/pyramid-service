@@ -116,7 +116,7 @@ public class ScoreChallengeController extends ChallengeController {
         String deckString = ((ScoreChallengeParameters) params).getDeckString();
         Integer goalScore = ((ScoreChallengeParameters) params).getGoalScore();
         Integer currentScore = ((ScoreChallengeParameters) params).getCurrentScore();
-        return "Score Challenge for deck (" + deckString + "), " +
+        return "Score Challenge with deck (" + deckString + "), " +
                 "goalScore (" + goalScore + "), " +
                 "currentScore (" + currentScore + ")";
     }

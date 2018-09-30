@@ -119,7 +119,7 @@ public class CardChallengeController extends ChallengeController {
         char goalRank = ((CardChallengeParameters) params).getGoalRank();
         int goalNum = ((CardChallengeParameters) params).getGoalNum();
         int currentNum = ((CardChallengeParameters) params).getCurrentNum();
-        return "Score Challenge for deck (" + deckString + "), " +
+        return "Score Challenge with deck (" + deckString + "), " +
                 "rankToRemove (" + goalRank + "), " +
                 "goalNumberToRemove (" + goalNum + "), " +
                 "currentNumberRemoved (" + currentNum + ")";

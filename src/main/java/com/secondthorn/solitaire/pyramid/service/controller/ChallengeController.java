@@ -1,6 +1,6 @@
 package com.secondthorn.solitaire.pyramid.service.controller;
 
-import com.secondthorn.solitaire.pyramid.service.exception.ChallengeNotFoundException;
+import com.secondthorn.solitaire.pyramid.service.exception.SolutionNotFoundException;
 import com.secondthorn.solitaire.pyramid.service.exception.InvalidParameterException;
 import com.secondthorn.solitaire.pyramid.service.model.Challenge;
 import com.secondthorn.solitaire.pyramid.service.model.Solution;
@@ -51,7 +51,7 @@ public abstract class ChallengeController {
         Challenge challenge = queryChallenge(params);
         if (challenge == null) {
             String message = challengeDescription(params) + " was not found.";
-            throw new ChallengeNotFoundException(message);
+            throw new SolutionNotFoundException(message);
         }
         return challenge.getSolutions();
     }
