@@ -33,9 +33,14 @@ public class ChallengeSolver {
         Optional<Challenge> ch = repository.findById(id);
         if (ch.isPresent()) {
             Challenge challenge = ch.get();
-            logger.info("Solving challenge from " + challenge.getUriPath() + "?" + challenge.getUriQuery());
+            logger.info("Solving challenge " + challengeIdString + " from " +
+                    challenge.getUriPath() + "?" + challenge.getUriQuery());
+            long start = System.currentTimeMillis();
             challenge.solve();
             repository.save(challenge);
+            long total = System.currentTimeMillis() - start;
+            logger.info("Challenge " + challengeIdString +
+                    " solved and saved in " + total + " milliseconds.");
         }
     }
 }
