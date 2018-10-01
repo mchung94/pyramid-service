@@ -4,8 +4,10 @@ import com.secondthorn.solitaire.pyramid.service.exception.InvalidParameterExcep
 import com.secondthorn.solitaire.pyramid.service.model.CardChallenge;
 import com.secondthorn.solitaire.pyramid.service.model.Challenge;
 import com.secondthorn.solitaire.pyramid.service.model.Solution;
+import com.secondthorn.solitaire.pyramid.service.queue.ChallengeSender;
 import com.secondthorn.solitaire.pyramid.service.repository.CardChallengeRepository;
 import com.secondthorn.solitaire.pyramid.service.solver.Deck;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,12 +20,15 @@ import java.util.List;
 /**
  * A Controller for handling Pyramid Solitaire Card Challenge requests.
  */
+@Profile("challenge_sender")
 @RestController
 public class CardChallengeController extends ChallengeController {
     private CardChallengeRepository repository;
+    private ChallengeSender sender;
 
-    public CardChallengeController(CardChallengeRepository repository) {
+    public CardChallengeController(CardChallengeRepository repository, ChallengeSender sender) {
         this.repository = repository;
+        this.sender = sender;
     }
 
     /**
@@ -134,7 +139,9 @@ public class CardChallengeController extends ChallengeController {
         char goalRank = ((CardChallengeParameters) params).getGoalRank();
         int numUntilGoal = ((CardChallengeParameters) params).getNumToRemove();
         CardChallenge challenge = new CardChallenge(deckString, goalRank, numUntilGoal);
-        return repository.save(challenge);
+        challenge = repository.save(challenge);
+        sender.send(challenge.getId().toString());
+        return challenge;
     }
 
 }

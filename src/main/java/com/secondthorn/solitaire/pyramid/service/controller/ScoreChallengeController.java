@@ -4,9 +4,11 @@ import com.secondthorn.solitaire.pyramid.service.exception.InvalidParameterExcep
 import com.secondthorn.solitaire.pyramid.service.model.Challenge;
 import com.secondthorn.solitaire.pyramid.service.model.ScoreChallenge;
 import com.secondthorn.solitaire.pyramid.service.model.Solution;
+import com.secondthorn.solitaire.pyramid.service.queue.ChallengeSender;
 import com.secondthorn.solitaire.pyramid.service.repository.ScoreChallengeRepository;
 import com.secondthorn.solitaire.pyramid.service.solver.Deck;
 import com.secondthorn.solitaire.pyramid.service.solver.ScoreChallengeSolver;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,12 +21,15 @@ import java.util.List;
 /**
  * A Controller for handling Pyramid Solitaire Score Challenge requests.
  */
+@Profile("challenge_sender")
 @RestController
 public class ScoreChallengeController extends ChallengeController {
     private ScoreChallengeRepository repository;
+    private ChallengeSender sender;
 
-    public ScoreChallengeController(ScoreChallengeRepository repository) {
+    public ScoreChallengeController(ScoreChallengeRepository repository, ChallengeSender sender) {
         this.repository = repository;
+        this.sender = sender;
     }
 
     /**
@@ -130,6 +135,8 @@ public class ScoreChallengeController extends ChallengeController {
         String deckString = ((ScoreChallengeParameters) params).getDeckString();
         int pointsUntilGoal = ((ScoreChallengeParameters) params).getPointsUntilGoal();
         ScoreChallenge challenge = new ScoreChallenge(deckString, pointsUntilGoal);
-        return repository.save(challenge);
+        challenge = repository.save(challenge);
+        sender.send(challenge.getId().toString());
+        return challenge;
     }
 }
