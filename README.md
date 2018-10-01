@@ -1,13 +1,11 @@
 # pyramid-service
-This is a work in progress on a Pyramid Solitaire solving web service.
+This is a Pyramid Solitaire solving web service.
 You can try it out online at https://secondthorn.com/pyramid-solitaire/solver
 with the appropriate parameters, for example
 [Score Challenge to get 291 points](https://secondthorn.com/pyramid-solitaire/solver/score?goalScore=1290&currentScore=999&deck=Ac2c3c4c5c6c7c8c9cTcJcQcKcAd2d3d4d5d6d7d8d9dTdJdQdKdAh2h3h4h5h6h7h8h9hThJhQhKhAs2s3s4s5s6s7s8s9sTsJsQsKs).
 
-Currently, complicated puzzles will run out of heap space on my server, so I'm
-working on a solution to that.  On my site, this service is set up using
-nginx, PostgreSQL, and Spring Boot, and I'm in the process of adding message
-queues for distributed worker processes to solve the more complicated puzzles.
+On my site, this service is set up using nginx, PostgreSQL, RabbitMQ, and
+Spring Boot.
 
 ## Introduction
 I've been curious about how to write code to find optimal solutions to
@@ -36,13 +34,16 @@ to make it available online as a web service.
 requires a few GB on difficult puzzles.
 - It's set up to use PostgreSQL to store game challenges and their solutions,
 so you may need to change this.
+- It also uses RabbitMQ as a message queue between two processes, one for the
+web service and one as the worker process on another machine with more RAM to
+just solve games.
 
 ### Steps
-1. Run `gradlew bootJar`, the executable jar will be in build/libs/pyramid-service-0.1.0.jar
+1. Run `gradlew bootJar`, the executable jar will be in build/libs
 2. Make a copy of of [application.properties](src/main/resources/application.properties) and put it [where Spring will load it](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html#boot-features-external-config-application-property-files).
-3. Run `java -jar pyramid-service-0.1.0.jar`
-4. As an example, in your browser, go to
-[http://localhost:8080/pyramid-solitaire/solver/board?deck=ThJsJh9cQd5c2d9hTd4hQs9d3s8dKh6c3h6d8cKcAhQhTc9sKd8s4s2c4cJc7cJd8h6s5d3c4d3d6hTs5sKs7dAc7s2sQc2h5hAs7hAd](http://localhost:8080/pyramid-solitaire/solver/Board?deck=ThJsJh9cQd5c2d9hTd4hQs9d3s8dKh6c3h6d8cKcAhQhTc9sKd8s4s2c4cJc7cJd8h6s5d3c4d3d6hTs5sKs7dAc7s2sQc2h5hAs7hAd)
+3. Run `java -Dspring.profiles.include=challenge_sender,challenge_solver -jar pyramid-service-0.1.0.jar`
+4. As an example, perhaps using a tool like Postman, POST to
+[http://localhost:8080/pyramid-solitaire/solver/board?deck=ThJsJh9cQd5c2d9hTd4hQs9d3s8dKh6c3h6d8cKcAhQhTc9sKd8s4s2c4cJc7cJd8h6s5d3c4d3d6hTs5sKs7dAc7s2sQc2h5hAs7hAd](http://localhost:8080/pyramid-solitaire/solver/Board?deck=ThJsJh9cQd5c2d9hTd4hQs9d3s8dKh6c3h6d8cKcAhQhTc9sKd8s4s2c4cJc7cJd8h6s5d3c4d3d6hTs5sKs7dAc7s2sQc2h5hAs7hAd), then wait a while and then follow up with a GET to the same URI.
 5. The result is JSON:
 ```json
 [
@@ -254,6 +255,11 @@ If you are curious if your deck is formatted correctly, just run it through
 the service and it will tell you if there are missing or duplicated cards.
 
 ### Endpoints
+#### How it works
+I implemented this service according to the process described by
+[REST and long-running jobs](https://farazdagi.com/2014/rest-and-long-running-jobs/).
+
+#### Building a request
 Given a card deck string like the above, the service supports all of Microsoft
 Solitaire Collection's challenges with these endpoints:
 - Board Challenges (clearing the 28 pyramid cards)
@@ -268,10 +274,10 @@ Solitaire Collection's challenges with these endpoints:
     - goalScore
     - currentScore
     - deck
+  - If goalScore and currentScore are not passed in, the solver will just try
+    to maximize the score.  The maximum possible score in a single game is 1290.
   - This will find the fastest way to reach the goal score.  If that's not
-    possible, it will try to maximize the score overall.  The maximum possible
-    score is 1290, so if you want to just maximize the score without a goal in
-    mind, use goalScore=1290&currentScore=0.
+    possible, it will try to maximize the score overall.
 - Card Challenges (removing cards of a given rank)
   - /pyramid-solitaire/solver/card?goalNumberToRemove=4&rankToRemove=J&currentNumberRemoved=1&deck=...
   - It needs four query parameters:
@@ -288,4 +294,22 @@ Solitaire Collection's challenges with these endpoints:
     doesn't know which is better (not clearing the board means having to use
     limited re-deals) so it returns both solutions.
 
+#### How to interact with the service
+Given a request URI for a Pyramid Solitaire challenge:
+1. Ask the service if there's a solution to the challenge: HTTP GET.
+   - It will either return status 200 (OK) with the solution as JSON, or 404
+     (Not Found) if there is no solution yet.
+2. Ask the service to solve a challenge: HTTP POST.
+   - If the solution exists, it will return status 200 (OK) with the solution
+     as JSON in the body.
+   - Otherwise, it will return 202 (Accepted) with a Location containing a new
+     URI to check on the status while it works on solving the challenge.
+     It will look something like: http://secondthorn.com/pyramid-solitaire/solver/tasks/{id}.
+3. Check the status of a posted challenge: HTTP GET on the tasks URI.
+   - If the challenge is not solved yet, the status will be 200 (OK) with JSON
+     indicating the status is pending.
+   - If the solution is ready, the status will be 303 (See Other) and the
+     Location will be the URI for retrieving the solution using GET.
 
+Any interaction will be validated and return appropriate error statuses if
+there's a problem.
