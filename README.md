@@ -2,7 +2,7 @@
 This is a Pyramid Solitaire solving web service.
 You can try it out online at https://secondthorn.com/pyramid-solitaire/solver
 with the appropriate parameters, for example
-[Score Challenge to get 291 points](https://secondthorn.com/pyramid-solitaire/solver/score?goalScore=1290&currentScore=999&deck=Ac2c3c4c5c6c7c8c9cTcJcQcKcAd2d3d4d5d6d7d8d9dTdJdQdKdAh2h3h4h5h6h7h8h9hThJhQhKhAs2s3s4s5s6s7s8s9sTsJsQsKs).
+[Score Challenge to go from 999 points to at least 1290 points](https://secondthorn.com/pyramid-solitaire/solver/score?goalScore=1290&currentScore=999&deck=Ac2c3c4c5c6c7c8c9cTcJcQcKcAd2d3d4d5d6d7d8d9dTdJdQdKdAh2h3h4h5h6h7h8h9hThJhQhKhAs2s3s4s5s6s7s8s9sTsJsQsKs).
 
 On my site, this service is set up using nginx, PostgreSQL, RabbitMQ, and
 Spring Boot.
@@ -14,7 +14,10 @@ one of my favorite solitaire card games.  The hard part about writing a
 program to solve these games is to optimize it.  I've improved the
 performance about 50x compared to straightforward implementations of
 Breadth-First Search and A\*, and reduced memory usage to the point where it
-can run well on a laptop with 8GB of RAM.
+can run well on a laptop with 8GB of RAM.  One of the keys is to figure out
+how to represent the current state of the game using a single 64-bit long value,
+and then precalculate some data to make finding successor states for a given
+state really fast.
 
 Earlier, I created
 [Solitaire Player](https://github.com/mchung94/solitaire-player),
@@ -311,5 +314,5 @@ Given a request URI for a Pyramid Solitaire challenge:
    - If the solution is ready, the status will be 303 (See Other) and the
      Location will be the URI for retrieving the solution using GET.
 
-Any interaction will be validated and return appropriate error statuses if
+Any interaction will be validated and return the appropriate HTTP status if
 there's a problem.
