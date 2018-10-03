@@ -1,14 +1,18 @@
 package com.secondthorn.solitaire.pyramid.service.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.secondthorn.solitaire.pyramid.service.exception.InvalidParameterException;
 import com.secondthorn.solitaire.pyramid.service.exception.SolutionNotFoundException;
 import com.secondthorn.solitaire.pyramid.service.model.Challenge;
 import com.secondthorn.solitaire.pyramid.service.model.Solution;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This is the main service controller for solving Pyramid Solitaire games.
@@ -70,7 +74,13 @@ public abstract class ChallengeController {
             challenge = saveNewChallenge(params);
         }
         URI uri = ucb.path("/pyramid-solitaire/solver/tasks/" + challenge.getId()).build().toUri();
-        return ResponseEntity.accepted().location(uri).build();
+        Map<String, String> postResult = new HashMap<>();
+        postResult.put("description", "Task created for " + challengeDescription(params));
+        postResult.put("task_location", uri.toString());
+        return ResponseEntity.accepted()
+                .location(uri)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new ObjectMapper().valueToTree(postResult));
     }
 
     protected boolean hasSolutions(Challenge challenge) {

@@ -13,9 +13,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.io.IOException;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -51,11 +52,10 @@ public class TaskController {
             URI uri = ucb.path(path).replaceQuery(query).build().toUri();
             return ResponseEntity.status(HttpStatus.SEE_OTHER).location(uri).build();
         }
-        try {
-            JsonNode node = new ObjectMapper().readTree("{\"status\": \"pending\"}");
-            return ResponseEntity.ok(node);
-        } catch (IOException ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        Map<String, String> task = new HashMap<>();
+        task.put("task_id", challenge.getId().toString());
+        task.put("status", "pending");
+        JsonNode node = new ObjectMapper().valueToTree(task);
+        return ResponseEntity.ok(node);
     }
 }
