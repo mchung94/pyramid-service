@@ -14,8 +14,7 @@ import java.util.List;
  * remove the 28 pyramid cards in as few moves as possible.  If it is not
  * possible, it won't return any solution at all.
  * <p>
- * When there's no solution, the player can either "lose quickly" by just
- * drawing or recycling until there are no more moves, or try a
+ * When there's no solution, the player can either ask for a new deal, or try a
  * ScoreChallengeSolver if they want to maximize the score.
  */
 public class BoardChallengeSolver extends BFSSolver {
@@ -43,9 +42,9 @@ public class BoardChallengeSolver extends BFSSolver {
             long[] masks = deck.getSuccessorMasks(state);
             addSuccessorStates(fringe, seenStates, state, masks);
         }
-        // if there's no way to clear the board, make a "lose quickly" solution
+        // if there's no way to clear the board, ask for a new deal
         List<Step> steps = new ArrayList<>();
-        steps.add(new Step(1, "Lose Quickly"));
+        steps.add(new Step(1, "Ask for a New Deal"));
         solutions.add(new Solution("There is no way to clear the board.", 0, false, steps));
         return solutions;
     }

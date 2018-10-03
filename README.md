@@ -270,7 +270,8 @@ Solitaire Collection's challenges with these endpoints:
   - It only needs a single query parameter, the deck.
   - This will find the minimum number of steps to clear the 28 pyramid cards,
     even if there are still cards in the stock or waste piles.  If there is no
-    solution, it will return a "solution" that just tells you to lose quickly.
+    solution, it will report that it's not possible to win and to ask for a new
+    deal.
 - Score Challenges (maximizing the score)
   - /pyramid-solitaire/solver/score?goalScore=2500&currentScore=1800&deck=...
   - It needs three query parameters:
