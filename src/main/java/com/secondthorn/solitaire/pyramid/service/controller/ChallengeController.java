@@ -79,7 +79,7 @@ public abstract class ChallengeController {
         postResult.put("task_location", uri.toString());
         return ResponseEntity.accepted()
                 .location(uri)
-                .contentType(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .body(new ObjectMapper().valueToTree(postResult));
     }
 
