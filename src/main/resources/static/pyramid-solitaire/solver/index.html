@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Pyramid Solitaire Solver</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/fonts.css" />
+</head>
+<body>
+
+<div class="main-heading">
+    <h1><span class="title">Pyramid Solitaire Solver</span></h1>
+    <h2><span class="title">Web Service Guide</span></h2>
+</div>
+
+<p>
+The source code for this service is available on <a href="https://github.com/mchung94/pyramid-service">GitHub</a>.
+</p>
+
+<p>
+This service is designed to solve
+<a href="https://en.wikipedia.org/wiki/Pyramid_(card_game)">Pyramid Solitaire</a>
+games according to the rules in Microsoft Solitaire Collection:
+<ul>
+    <li>
+        The game uses a standard 52-card deck, and only uses the numeric value
+        of the cards.  Aces are always 1 and Kings are 13.
+    </li>
+    <li>
+        28 cards are in a seven row pyramid formation with one card on top
+        and seven cards on the bottom row.  Each card has two cards covering
+        it from below (excluding the bottom row).  The remaining 24 cards
+        are face up in a single stack called the stock pile.  There's also a
+        waste pile that starts out empty.
+    </li>
+    <li>
+        The goal of the game is to remove all 28 pyramid cards, even if there
+        are still cards remaining in the stock or waste piles.
+    </li>
+    <li>
+        Actions the player can perform using the uncovered pyramid cards and
+        the top cards of the stock and waste piles:
+        <ol>
+            <li>Remove a pair of cards that add up to 13.</li>
+            <li>Remove a King by itself since it counts as 13.</li>
+            <li>If the stock pile isn't empty, draw a card from the stock pile to the waste pile.</li>
+            <li>If the stock pile is empty, recycle the waste pile back into the stock pile.  This can only be done twice per game.</li>
+        </ol>
+    </li>
+</ul>
+</p>
+
+<p>
+The Pyramid Solitaire Solver can solve the following types of challenges:
+<ol>
+    <li>
+        Board Challenges: clear the 28 pyramid cards.  There can still be cards
+        in the stock pile and waste pile.
+    </li>
+    <li>
+        Score Challenges: reach the goal score.  For example, "Earn a score
+        of 2,300."  The maximum score in a single game is 1290 so completing
+        this challenge requires playing multiple games.
+    </li>
+    <li>
+        Card Challenges: remove cards of a given rank.  For example, "Clear
+        8 Queens in 2 deals."  The player can only clear up to four cards in 
+        a single game so this requires multiple games as well.  If the player
+        clears the board, the next deal does not count towards the 2 deal limit
+        in the example.
+    </li>
+</ol>
+</p>
+
+<h2>Building a Deck</h2>
+<p>
+Cards are two characters, consisting of a rank followed by a suit.  Note that
+a ten is a letter T, and that all ranks are uppercase, and all suits are
+lowercase.
+<ul>
+    <li>Card ranks: A 2 3 4 5 6 7 8 9 T J Q K</li>
+    <li>Card suits: c d h s</li>
+</ul>
+</p>
+
+<p>
+Decks are strings containing each card of a standard 52-card deck, without any
+whitespace or delimiters.  The service will let you know if there are missing
+or duplicate cards.
+</p>
+
+<p>
+An example deck string:
+<code>Ac2c3c4c5c6c7c8c9cTcJcQcKcAd2d3d4d5d6d7d8d9dTdJdQdKdAh2h3h4h5h6h7h8h9hThJhQhKhAs2s3s4s5s6s7s8s9sTsJsQsKs</code>
+</p>
+<p>
+The above deck string represents a game like this where the 3h is the top of
+the stock pile and the Ks is the bottom of the stock pile.
+<pre>
+            Ac
+          2c  3c
+        4c  5c  6c
+      7c  8c  9c  Tc
+    Jc  Qc  Kc  Ad  2d
+  3d  4d  5d  6d  7d  8d
+9d  Td  Jd  Qd  Kd  Ah  2h
+3h 4h 5h 6h 7h 8h 9h Th Jh Qh Kh As 2s 3s 4s 5s 6s 7s 8s 9s Ts Js Qs Ks
+</pre>
+</p>
+
+<h2>How to use the services</h2>
+After building a deck and adding the other parameters for Score and Card
+challenges shown below:
+<ul>
+    <li>
+        <em>GET [challenge request URI]</em> can retrieve a solution for the
+        game if it already solved the game and the solution exists in the
+        database.  The results can be:
+        <ul>
+            <li>
+                If the solution exists, the status code 200 (OK) and JSON for
+                the solution details will be returned.
+            </li>
+            <li>
+                If the solution doesn't exist, the status code 404 (Not Found)
+                will be returned.  At this point you can POST the challenge to
+                be solved (described next).
+            </li>
+        </ul>
+    </li>
+    <li>
+        <em>POST [challenge request URI]</em> will submit a challenge to be
+        solved.  It follows the process described by
+        <a href="https://farazdagi.com/2014/rest-and-long-running-jobs/">REST and long-running jobs</a>.
+        The results can be:
+        <ul>
+            <li>
+                If the solution exists already, the status code 200 (OK) and JSON
+                for the solution will be returned.
+            </li>
+            <li>
+                If the solution doesn't exist, the status code 202 (Accepted) and
+                JSON including a link to check on the progress will be returned.
+                The link will look something like /pyramid-solitaire/solver/tasks/{id}.
+            </li>
+        </ul>
+    </li>
+    <li>
+        <em>GET [task URI]</em> is given when POSTing a challenge.  The results
+        can be:
+        <ul>
+            <li>
+                If it hasn't finished calculating the solution, the status code
+                200 (OK) will be returned along with JSON indicating the
+                solution is still pending.
+            </li>
+            <li>
+                If it has finished calculation the solution, the status code
+                303 (See Other) will be returned along with a link to see the
+                solution.  Browsers may automatically redirect to the new link
+                and return the solution.
+            </li>
+        </ul>
+    </li>
+</ul>
+
+<h2>Board Challenges</h2>
+The Board Challenge will try to find a way to clear the board in the fewest
+steps possible.  If it's not possible, then it will have a solution that
+basically says to lose quickly.
+<p>
+<em>/pyramid-solitaire/solver/board?deck=...</em>
+</p>
+<p>
+<form action="/pyramid-solitaire/solver/board" method="get">
+    Deck: <input type="text" name="deck"><br/>
+    <button type="submit">GET solution</button><br/>
+    <button type="submit" formmethod="post" formtarget="_blank">POST unsolved challenge</button>
+</form>
+</p>
+
+<h2>Score Challenges</h2>
+When the request just contains a deck, without goalScore and currentScore, it
+will just try to maximize the score.  Otherwise the solver knows the solution
+should stop when it reaches the goal.
+<p>
+<em>/pyramid-solitaire/solver/score?deck=...</em>
+</p>
+<p>
+<em>/pyramid-solitaire/solver/score?goalScore=1290&amp;currentScore=0&amp;deck=...</em>
+</p>
+<p>
+<form action="/pyramid-solitaire/solver/score" method="get">
+    Deck: <input type="text" name="deck"><br/>
+    Goal Score: <input type="text" name="goalScore"><br/>
+    Current Score: <input type="text" name="currentScore"><br/>
+    <button type="submit">GET solution</button><br/>
+    <button type="submit" formmethod="post" formtarget="_blank">POST unsolved challenge</button>
+</form>
+</p>
+
+<h2>Card Challenges</h2>
+The solver will try to find the minimum steps necessary to remove enough cards
+to reach the goal.  This may return two solutions.  For example, if the goal is
+to remove 4 Jacks, and there's a way to remove 2 while clearing the board and
+3 while not clearing the board (requiring using one of a limited number of
+re-deals), it can't decide which solution is best so it returns both.
+<p>
+<em>/pyramid-solitaire/solver/card?rankToRemove=J&amp;goalNumberToRemove=4&amp;currentNumberRemoved=0&amp;deck=...</em>
+</p>
+<p>
+<form action="/pyramid-solitaire/solver/card" method="get">
+    Deck: <input type="text" name="deck"><br/>
+    Rank to Remove: <input type="text" name="rankToRemove"><br/>
+    Goal Number of Cards to Remove: <input type="text" name="goalNumberToRemove"><br/>
+    Current Number of Cards Removed: <input type="text" name="currentNumberRemoved"><br/>
+    <button type="submit">GET solution</button><br/>
+    <button type="submit" formmethod="post" formtarget="_blank">POST unsolved challenge</button>
+</form>
+</p>
+
+</body>
+</html>

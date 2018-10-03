@@ -50,7 +50,7 @@ public class ScoreChallengeController extends ChallengeController {
         private int pointsUntilGoal;
 
         ScoreChallengeParameters(String deckString, Integer goalScore, Integer currentScore) {
-            this.deckString = deckString;
+            this.deckString = deckString.trim();
             this.goalScore = goalScore == null ? ScoreChallengeSolver.MAX_POSSIBLE_SCORE : goalScore;
             this.currentScore = currentScore == null ? 0 : currentScore;
             this.pointsUntilGoal = ceilingMultipleOfFive(this.goalScore - this.currentScore);

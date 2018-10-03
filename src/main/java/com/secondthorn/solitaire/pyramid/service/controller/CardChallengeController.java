@@ -46,7 +46,7 @@ public class CardChallengeController extends ChallengeController {
         private int currentNum;
 
         CardChallengeParameters(String deckString, char goalRank, int goalNum, int currentNum) {
-            this.deckString = deckString;
+            this.deckString = deckString.trim();
             this.goalRank = goalRank;
             this.goalNum = goalNum;
             this.currentNum = currentNum;
@@ -128,7 +128,7 @@ public class CardChallengeController extends ChallengeController {
         char goalRank = ((CardChallengeParameters) params).getGoalRank();
         int goalNum = ((CardChallengeParameters) params).getGoalNum();
         int currentNum = ((CardChallengeParameters) params).getCurrentNum();
-        return "Score Challenge with deck (" + deckString + "), " +
+        return "Card Challenge with deck (" + deckString + "), " +
                 "rankToRemove (" + goalRank + "), " +
                 "goalNumberToRemove (" + goalNum + "), " +
                 "currentNumberRemoved (" + currentNum + ")";

@@ -38,7 +38,7 @@ public class BoardChallengeController extends ChallengeController {
         private String deckString;
 
         BoardChallengeParameters(String deckString) {
-            this.deckString = deckString;
+            this.deckString = deckString.trim();
         }
 
         String getDeckString() {
