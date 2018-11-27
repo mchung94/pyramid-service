@@ -76,7 +76,7 @@ public abstract class ChallengeController {
         URI uri = ucb.path("/pyramid-solitaire/solver/tasks/" + challenge.getId()).build().toUri();
         Map<String, String> postResult = new HashMap<>();
         postResult.put("description", "Task created for " + challengeDescription(params));
-        postResult.put("task_location", uri.toString());
+        postResult.put("task_location", uri.getPath());
         return ResponseEntity.accepted()
                 .location(uri)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
