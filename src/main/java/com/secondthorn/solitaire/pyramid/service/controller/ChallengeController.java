@@ -1,5 +1,6 @@
 package com.secondthorn.solitaire.pyramid.service.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.secondthorn.solitaire.pyramid.service.exception.InvalidParameterException;
 import com.secondthorn.solitaire.pyramid.service.exception.SolutionNotFoundException;
@@ -64,11 +65,12 @@ public abstract class ChallengeController {
     }
 
     // The process to POST a challenge, customized per challenge type.
-    protected ResponseEntity<List<Solution>> postChallenge(ChallengeParameters params, UriComponentsBuilder ucb) {
+    protected ResponseEntity<JsonNode> postChallenge(ChallengeParameters params, UriComponentsBuilder ucb) {
         params.validate();
+        ObjectMapper mapper = new ObjectMapper();
         Challenge challenge = queryChallenge(params);
         if (hasSolutions(challenge)) {
-            return ResponseEntity.ok(challenge.getSolutions());
+            return ResponseEntity.ok(mapper.valueToTree(challenge.getSolutions()));
         }
         if (challenge == null) {
             challenge = saveNewChallenge(params);
@@ -80,7 +82,7 @@ public abstract class ChallengeController {
         return ResponseEntity.accepted()
                 .location(uri)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .body(new ObjectMapper().valueToTree(postResult));
+                .body(mapper.valueToTree(postResult));
     }
 
     protected boolean hasSolutions(Challenge challenge) {

@@ -1,5 +1,6 @@
 package com.secondthorn.solitaire.pyramid.service.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.secondthorn.solitaire.pyramid.service.exception.InvalidParameterException;
 import com.secondthorn.solitaire.pyramid.service.model.BoardChallenge;
 import com.secondthorn.solitaire.pyramid.service.model.Challenge;
@@ -65,7 +66,7 @@ public class BoardChallengeController extends ChallengeController {
      * will solve the challenge and return the solution.
      */
     @PostMapping("/pyramid-solitaire/solver/board")
-    public ResponseEntity<List<Solution>> postBoardChallenge(
+    public ResponseEntity<JsonNode> postBoardChallenge(
             @RequestParam(value = "deck") String deckString,
             UriComponentsBuilder ucb) {
         BoardChallengeParameters params = new BoardChallengeParameters(deckString);

@@ -1,5 +1,6 @@
 package com.secondthorn.solitaire.pyramid.service.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.secondthorn.solitaire.pyramid.service.exception.InvalidParameterException;
 import com.secondthorn.solitaire.pyramid.service.model.CardChallenge;
 import com.secondthorn.solitaire.pyramid.service.model.Challenge;
@@ -106,7 +107,7 @@ public class CardChallengeController extends ChallengeController {
      * will solve the challenge and return the solution.
      */
     @PostMapping("/pyramid-solitaire/solver/card")
-    public ResponseEntity<List<Solution>> postCardChallenge(
+    public ResponseEntity<JsonNode> postCardChallenge(
             @RequestParam(value = "deck") String deckString,
             @RequestParam(value = "rankToRemove") char goalRank,
             @RequestParam(value = "goalNumberToRemove") int goalNum,
